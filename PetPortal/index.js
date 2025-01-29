@@ -1,34 +1,41 @@
+// index.js (updated)
 const express = require('express');
 const bodyParser = require('body-parser');
-const { User } = require('./models'); // Fixed path (1)
+const session = require('express-session');
 const app = express();
 const PORT = 3000;
 
+// Database connection
+const models = require('./models/app');
+models.sequelize.sync()
+  .then(() => console.log('Database connected'))
+  .catch(err => console.error('Database connection error:', err));
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public')); // Fixed path (2)
-app.set('view engine', 'ejs');
-app.set('views', 'views'); // Fixed path (3)
+app.use(express.static('public'));
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true
+}));
 
-// Database Sync (4)
-const models = require('./models');
-models.sequelize.sync()
-  .then(() => console.log('Connected to database'))
-  .catch(err => console.error('Database connection failed:', err));
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('layout', 'base');
 
 // Routes
+// Replace the root route in index.js with:
+const homeRoutes = require('./routes/homeRoutes');
+app.use('/', homeRoutes);
+
+// Add this root route handler
 app.get('/', async (req, res) => {
-    const users = await User.findAll();
-    res.render('index', { users });
+  const users = await models.User.findAll(); // Use models.User
+  res.render('index', { users });
 });
 
-app.post('/add-user', async (req, res) => {
-    const { name, email } = req.body;
-    await User.create({ name, email });
-    res.redirect('/');
-});
-
-// Start the server
+// Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
