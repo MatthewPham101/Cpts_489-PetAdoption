@@ -283,6 +283,95 @@ body {
     width: 80%;
 }
 
+
+.adoption-form {
+    text-align: left;
+    width: 100%;
+}
+
+.adoption-form .form-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #595758;
+    margin-bottom: 5px;
+}
+
+.adoption-form .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.adoption-form textarea {
+    resize: none;
+}
+
+.adoption-form button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.quiz-container {
+    text-align: center;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-container h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.quiz-container p {
+    font-size: 16px;
+    color: #666;
+}
+
+.quiz-question {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.quiz-question p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.quiz-question label {
+    display: block;
+    padding: 8px;
+    background: #f7f7f7;
+    border-radius: 5px;
+    cursor: pointer;
+    transform: background 0.2s;
+}
+
+.quiz-question label:hover {
+    background: #ffebf0;
+}
+
+.quiz-container button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.adoption-container {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    justify-content: center;
+}
+
 /* Footer */
 .auth-footer {
     width: 100%;
