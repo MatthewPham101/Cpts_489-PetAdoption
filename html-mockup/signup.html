@@ -1,0 +1,64 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./styles/base.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Pet Portal</title>
+    </head>
+    <body>
+            <!-- <header class="auth-header">
+                <img src="./assets/pet-portal-logo.png" alt="Logo" class="logo">
+                <h1>Pet Portal</h1>
+            </header> -->
+            <header class="auth-header">
+                <div class="nav-left">
+                    <a href="home.html">
+                        <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                    </a>
+                    <nav class="nav-links">
+                        <a href="about-us.html">About Us</a>
+                        <a href="adoption-application.html">Adoption Application</a>
+                        <a href="browse-pets.html">Browse Pets</a>
+                        <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="auth-page">
+                <div class="auth-container">
+                    <h3 class="text-center mb-3">Sign Up</h3>
+                    <form action="signup.php" method="POST">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name:</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name:</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password:</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </form>
+                    <div class="mt-3 text-center">
+                        <p>Already have an account? <a href="login.html" class="login-link">Log in</a></p>
+                    </div>
+                </div>
+            </div>            
+
+            <footer class="auth-footer">
+                <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+            </footer>
+    </body>
+</html>
