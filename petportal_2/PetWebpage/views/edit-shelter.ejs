@@ -27,23 +27,7 @@
         </script>
     </head>
     <body onload="loadPetDetails()">
-        <header class="auth-header">
-            <div class="nav-left">
-                <a href="home.html">
-                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
-                </a>
-                <nav class="nav-links">
-                    <a href="about-us.html">About Us</a>
-                    <a href="adoption-application.html">Adoption Application</a>
-                    <a href="browse-pets.html">Browse Pets</a>
-                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
-                </nav>
-            </div>
-            <div class="auth-buttons">
-                <a href="login.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
-            </div>        
-        </header>
+        <%- include('components/header') %>
 
         <div class="about-content">
             <h1>Edit Shelter Information</h1>

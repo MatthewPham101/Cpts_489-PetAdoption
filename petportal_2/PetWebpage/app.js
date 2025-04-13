@@ -59,7 +59,7 @@ app.get('/browse-pets', (req, res) => {
   res.render('browse-pets', { user: req.session.userId });
 });
 
-app.get('/pet-compatibility', (req, res) => {
+app.get('/pet-compatability', (req, res) => {
   res.render('pet-compatibility', { user: req.session.userId });
 });
 
