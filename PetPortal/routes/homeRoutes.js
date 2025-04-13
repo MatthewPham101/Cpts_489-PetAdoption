@@ -12,19 +12,40 @@ router.get('/register', (req, res) => {
 });
 
 
+// router.post('/register', async (req, res) => {
+//   const { name, email, password } = req.body;
+
+//   try {
+
+//     const existingUser = await models.User.findOne({ where: { email } });
+//     if (existingUser) {
+//       return res.render('register', { error: 'Email already in use.' });
+//     }
+
+
+//     await models.User.create({ name, email, password });
+
+
+//     res.redirect('/');
+//   } catch (err) {
+//     console.error('Error during registration:', err);
+//     res.status(500).render('register', { error: 'Internal Server Error' });
+//   }
+// });
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName, email, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.render('register', { error: 'Passwords do not match.' });
+  }
 
   try {
-
     const existingUser = await models.User.findOne({ where: { email } });
     if (existingUser) {
       return res.render('register', { error: 'Email already in use.' });
     }
 
-
-    await models.User.create({ name, email, password });
-
+    await models.User.create({ firstName, lastName, email, password });
 
     res.redirect('/');
   } catch (err) {
@@ -32,6 +53,7 @@ router.post('/register', async (req, res) => {
     res.status(500).render('register', { error: 'Internal Server Error' });
   }
 });
+
 
 
 router.post('/login', async (req, res) => {
