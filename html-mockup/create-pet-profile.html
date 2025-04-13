@@ -1,0 +1,96 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./styles/base.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Browse Pets</title>
+    </head>
+    <body>
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="about-us.html">About Us</a>
+                    <a href="adoption-application.html">Adoption Application</a>
+                    <a href="browse-pets.html">Browse Pets</a>
+                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>
+        </header>
+
+        <div class="about-content">
+            <h1>Create Pet Profile</h1>
+        </div>
+
+        <div class="create-profile">
+            <form action="create-pet-profile" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="name" id="name" name="name" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="form-label">Type:</label>
+                    <input type="type" id="type" name="type" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age:</label>
+                    <input type="age" id="age" name="age" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Gender:</label>
+                    <input type="gender" id="gender" name="gender" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <input type="description" id="description" name="description" class="form-control-desc" required />
+                </div>
+                <div class="mb-3">
+                    <label for="photo" class="form-label">Add Photo:</label>
+                    <input type="image" id="photo" name="photo" class="form-control-photo" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Create Profile</button>
+            </form>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+    </body>
+</html>
+
+<style>
+    .create-profile {
+        padding: 20px;
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        width: 60%;
+    }
+
+    .form-control-desc {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 100px;
+    }
+
+    .form-control-photo {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        height: 20px;
+    }
+</style>
