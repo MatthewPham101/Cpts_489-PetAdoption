@@ -1,4 +1,50 @@
-<%- include('base', { 
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/base.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Pet Portal - Home</title>
+    </head>
+    <body>
+
+        <!-- Header -->
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="/dashboard">
+                    <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="/about-us">About Us</a>
+                    <a href="/adoption-application">Adoption Application</a>
+                    <a href="/browse-pets">Browse Pets</a>
+                    <a href="/pet-compatability">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="" class="btn btn-secondary">Log In</a>
+                <a href="" class="btn btn-secondary">Sign Up</a>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <main class="home-main">
+            <div class="overlay"></div>
+            <div class="home-content">
+                <h1>Pet Portal</h1>
+                <p>Connecting loving homes with pets in need.</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="auth-footer">
+            <p>&copy; 2025 Pet Portal | <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+
+    </body>
+</html>
+
+<!-- <%- include('base', { 
     banner: "Dashboard", 
     content: ` 
         <section class="dashboard-container">
@@ -64,4 +110,4 @@
   .logout-button:hover {
     background-color: #c82333;
   }
-</style>
+</style> -->

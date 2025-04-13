@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/base.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Adoption Application</title>
+    </head>
+    <body>
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="/dashboard">
+                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="/about-us">About Us</a>
+                    <a href="/adoption-application">Adoption Application</a>
+                    <a href="/browse-pets">Browse Pets</a>
+                    <a href="/pet-compatability">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>        
+        </header>
+
+        <div class="adoption-container">
+            <h1>Adoption Application</h1>
+            <p>Fill out the form below to apply for pet adoption.</p>
+
+            <form class="adoption-form">
+                <div class="mb-3">
+                    <label for="full-name" class="form-label">Full Name</label>
+                    <input type="text" id="full-name" class="form-control" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Home Address</label>
+                    <input type="text" id="address" class="form-control" placeholder="Enter your home address" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="pet-preference" class="form-label">Which pet are you applying for?</label>
+                    <input type="text" id="pet-preference" class="form-control" placeholder="Enter pet's name or type" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="living-situation" class="form-label">Describe your living situation</label>
+                    <textarea id="living-situation" class="form-control" placeholder="Do you have a yard? Other pets? Children?" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="reason" class="form-label">Why do you want to adopt this pet?</label>
+                    <textarea id="reason" class="form-control" placeholder="Tell us why you are interested in adopting this pet" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Application</button>
+            </form>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+    </body>
+</html>

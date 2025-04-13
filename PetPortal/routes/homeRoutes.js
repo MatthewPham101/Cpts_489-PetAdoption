@@ -66,6 +66,26 @@ router.get('/dashboard', (req, res) => {
     });
 });
 
+router.get('/about-us', (req, res) => {
+  res.render('about-us');
+});
+
+router.get('/adoption-application', (req, res) => {
+  res.render('adoption-application');
+});
+
+router.get('/browse-pets', (req, res) => {
+  res.render('browse-pets');
+});
+
+router.get('/pet-compatability', (req, res) => {
+  res.render('pet-compatability');
+});
+
+router.get('/about-us', (req, res) => {
+  res.render('about-us');
+});
+
   
 
 
