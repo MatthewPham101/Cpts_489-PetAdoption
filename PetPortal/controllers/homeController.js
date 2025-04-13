@@ -11,5 +11,5 @@ const homeController = {
     }
   }
 };
-
+// seqyuelize 
 module.exports = homeController;

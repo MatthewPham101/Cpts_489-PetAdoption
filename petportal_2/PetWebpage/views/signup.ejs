@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Pet Portal - Sign Up' %></title>
+    <link rel="stylesheet" href="/stylesheets/base.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="auth-header">
+        <div class="nav-left">
+            <a href="/">
+                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+            </a>
+            <nav class="nav-links">
+                <a href="/about-us">About Us</a>
+                <a href="/adoption-application">Adoption Application</a>
+                <a href="/browse-pets">Browse Pets</a>
+                <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+            </nav>
+        </div>
+        <div class="auth-buttons">
+            <% if (user) { %>
+                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+            <% } else { %>
+                <a href="login" class="btn btn-secondary">Log In</a>
+                <a href="signup" class="btn btn-secondary">Sign Up</a>
+            <% } %>
+        </div>
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-page">
+            <div class="auth-container">
+                <% if (flash) { %>
+                    <div class="alert alert-<%= flash.type %>">
+                        <%= flash.message %>
+                    </div>
+                <% } %>
+
+                <h1 class="text-center mb-4">Create Your Account</h1>
+                
+                <form action="/auth/signup" method="POST" class="auth-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" 
+                                   value="<%= formData ? formData.firstName : '' %>" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control"
+                                   value="<%= formData ? formData.lastName : '' %>" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                               value="<%= formData ? formData.email : '' %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                        <small class="form-text">Minimum 8 characters</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role" class="form-label">I want to:</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="">Select account type</option>
+                            <option value="adopter" <%= formData && formData.role === 'adopter' ? 'selected' : '' %>>Adopt a pet</option>
+                            <option value="shelter" <%= formData && formData.role === 'shelter' ? 'selected' : '' %>>List pets for adoption</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </form>
+
+                <div class="auth-footer-links">
+                    <p>Already have an account? <a href="/auth/login" class="login-link">Log in here</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="auth-footer">
+        <p>&copy; 2025 Pet Portal | <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+    </footer>
+</body>
+</html>

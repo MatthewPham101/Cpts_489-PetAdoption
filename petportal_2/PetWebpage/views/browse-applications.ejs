@@ -1,0 +1,141 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/base.css">
+
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Browse Pets</title>
+    </head>
+    <body>
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="about-us.html">About Us</a>
+                    <a href="adoption-application.html">Adoption Application</a>
+                    <a href="browse-pets.html">Browse Pets</a>
+                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>
+        </header>
+
+        <div class="about-content">
+            <h1>Manage Applications</h1>
+            <div class="filter-container">
+                <label for="filter">Filter by Type:</label>
+                <select id="filter" name="filter" onchange="filterPets()">
+                    <option value="all">All</option>
+                    <option value="dog">Dogs</option>
+                    <option value="cat">Cats</option>
+                    <option value="other">Other Pets</option>
+                </select>
+            </div>
+
+            <div class="apps-gallery">
+                <!-- Pet 1 -->
+                <div>
+                    <div class="pet-item dog">
+                        <h2>Application from: John</h2>
+                        <h3>Looking for: Buddy</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+                <!-- Pet 2 -->
+                <div>
+                    <div class="pet-item cat">
+                        <h2>Application from: Mary</h2>
+                        <h3>Looking for: Luna</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+                <!-- Pet 3 -->
+                <div>
+                    <div class="pet-item dog">
+                        <h2>Application from: Daniel</h2>
+                        <h3>Looking for: Rex</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+                <!-- Pet 4 -->
+                <div>
+                    <div class="pet-item cat">
+                        <h2>Application from: Joe</h2>
+                        <h3>Looking for: Luna</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+                <!-- Pet 5 -->
+                <div>
+                    <div class="pet-item dog">
+                        <h2>Application from: Ava</h2>
+                        <h3>Looking for: Max</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="pet-item dog">
+                        <h2>Application from: Ava</h2>
+                        <h3>Looking for: Luna</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="pet-item cat">
+                        <h2>Application from: Connor</h2>
+                        <h3>Looking for: Whiskers</h3>
+                        <button class="btn btn-primary">Review</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+
+        <script>
+            // Filter function to show pets based on selected type
+            function filterPets() {
+                const filterValue = document.getElementById('filter').value;
+                const petItems = document.querySelectorAll('.pet-item');
+
+                petItems.forEach(pet => {
+                    if (filterValue === 'all' || pet.classList.contains(filterValue)) {
+                        pet.style.display = 'block';
+                    } else {
+                        pet.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
+
+<style>
+    .pet-wrapper {
+        display: block;
+        height: 100%;
+        text-align: center;
+    }
+
+    .apps-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        padding: 20px;
+    }
+
+    .apps-gallery h2, .apps-gallery h3 {
+        color: black;
+    }
+</style>

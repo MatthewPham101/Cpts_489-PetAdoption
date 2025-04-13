@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/stylesheets/base.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <title>Pet Portal - Home</title>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="auth-header">
+    <div class="nav-left">
+      <a href="/">
+        <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+      </a>
+      <nav class="nav-links">
+        <a href="/about-us">About Us</a>
+        <a href="/adoption-application">Adoption Application</a>
+        <a href="/browse-pets">Browse Pets</a>
+        <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+      </nav>
+    </div>
+    <div class="auth-buttons">
+      <% if (user) { %>
+
+        <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+        <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+      <% } else { %>
+        <a href="/auth/login" class="btn btn-secondary">Log In</a>
+        <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+      <% } %>
+    </div>
+  </header>
+
+  <!-- Main Section -->
+  <main class="home-main">
+    <div class="overlay"></div>
+    <div class="home-content">
+      <h1>Pet Portal</h1>
+      <p>Connecting loving homes with pets in need.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <p>&copy; 2025 Pet Portal | <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+  </footer>
+
+</body>
+</html>
+
+.welcome-message {
+    margin-right: 15px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+  }

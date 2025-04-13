@@ -31,7 +31,7 @@ app.use('/', homeRoutes);
 
 // Add this root route handler
 app.get('/', async (req, res) => {
-  const users = await models.User.findAll(); // Use models.User
+  const users = await models.User.findAll(); 
   res.render('index', { users });
 });
 

@@ -1,0 +1,97 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/base.css">
+
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Browse Pets</title>
+    </head>
+    <body>
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="about-us.html">About Us</a>
+                    <a href="adoption-application.html">Adoption Application</a>
+                    <a href="browse-pets.html">Browse Pets</a>
+                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>
+        </header>
+
+        <div class="about-content">
+            <h1>Browse Our Pets</h1>
+            <div class="filter-container">
+                <label for="filter">Filter by Type:</label>
+                <select id="filter" name="filter" onchange="filterPets()">
+                    <option value="all">All</option>
+                    <option value="dog">Dogs</option>
+                    <option value="cat">Cats</option>
+                    <option value="other">Other Pets</option>
+                </select>
+            </div>
+
+            <div class="pets-gallery">
+                <!-- Pet 1 -->
+                <div class="pet-item dog">
+                    <a href="pet-profile.html?name=Buddy&image=assets/bigger-white-dog.avif&type=Siberian Husky&age=3&gender=Male&desc=Buddy is an energetic and loving dog who enjoys outdoor activities.">
+                        <img src="assets/bigger-white-dog.avif" alt="Pet 1" class="pet-image">
+                        <p class="pet-name">Buddy</p>
+                    </a>
+                </div>
+                <!-- Pet 2 -->
+                <div class="pet-item cat">
+                    <img src="assets/orange-cat.avif" alt="Pet 2" class="pet-image">
+                    <p class="pet-name">Whiskers</p>
+                </div>
+                <!-- Pet 3 -->
+                <div class="pet-item dog">
+                    <img src="assets/black-dog.avif" alt="Pet 3" class="pet-image">
+                    <p class="pet-name">Rex</p>
+                </div>
+                <!-- Pet 4 -->
+                <div class="pet-item dog">
+                    <img src="assets/border-collie.avif" alt="Pet 4" class="pet-image">
+                    <p class="pet-name">Frodo</p>
+                </div>
+                <!-- Pet 5 -->
+                <div class="pet-item cat">
+                    <img src="assets/white-cat.avif" alt="Pet 5" class="pet-image">
+                    <p class="pet-name">Luna</p>
+                </div>
+                <!-- Pet 6 -->
+                <div class="pet-item dog">
+                    <img src="assets/white-dog.avif" alt="Pet 6" class="pet-image">
+                    <p class="pet-name">Max</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+
+        <script>
+            // Filter function to show pets based on selected type
+            function filterPets() {
+                const filterValue = document.getElementById('filter').value;
+                const petItems = document.querySelectorAll('.pet-item');
+
+                petItems.forEach(pet => {
+                    if (filterValue === 'all' || pet.classList.contains(filterValue)) {
+                        pet.style.display = 'block';
+                    } else {
+                        pet.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

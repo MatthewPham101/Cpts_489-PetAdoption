@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/base.css">
+
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Pet Profile</title>
+        <script>
+            function loadPetDetails() {
+                const params = new URLSearchParams(window.location.search);
+                const petName = params.get("name") || "Unknown Pet";
+                const petImage = params.get("image") || "assets/default-pet.avif";
+                const petType = params.get("type") || "Unkown Type";
+                const petAge = params.get("age") || "Unkown Age";
+                const petGender = params.get("gender") || "Unkown Gender";
+                const petDesc = params.get("desc") || "No description available";
+
+                document.getElementById("pet-name").textContent = petName;
+                document.getElementById("pet-image").src = petImage;
+                document.getElementById("pet-type").textContent = "Breed: " + petType;
+                document.getElementById("pet-age").textContent = "Age: " + petAge;
+                document.getElementById("pet-gender").textContent = "Gender: " + petGender;
+                document.getElementById("pet-desc").textContent = petDesc;
+            }
+        </script>
+    </head>
+    <body onload="loadPetDetails()">
+        <header class="auth-header">
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+                </a>
+                <nav class="nav-links">
+                    <a href="about-us.html">About Us</a>
+                    <a href="adoption-application.html">Adoption Application</a>
+                    <a href="browse-pets.html">Browse Pets</a>
+                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-secondary">Log In</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>        
+        </header>
+
+        <div class="about-content">
+            <h1>Meet <span id="pet-name"></span></h1>
+        </div>
+
+        <div class="pet-profile-container">
+            <div class="pet-profile-item">
+                <img id="pet-image" class="pet-image" alt="Pet">
+                <div class="pet-details">
+                    <p id="pet-type"></p>
+                    <p id="pet-age"></p>
+                    <p id="pet-gender"></p>
+                    <p id="pet-desc"></p>
+                    <a href="adoption-application.html" class="btn btn-primary">Apply for Adoption</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+    </body>
+</html>
