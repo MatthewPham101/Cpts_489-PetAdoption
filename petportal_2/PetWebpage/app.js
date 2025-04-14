@@ -30,9 +30,10 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-// Make user available to all views
+// Make user available to all views and routes
 app.use((req, res, next) => {
-  res.locals.user = req.session.userId || null;
+  res.locals.user = req.session.user || null;
+  req.user = req.session.user || null; // Also expose on req.user for route handlers
   next();
 });
 
@@ -48,22 +49,24 @@ app.use('/users', usersRouter);
 
 
 app.get('/about-us', (req, res) => {
-  res.render('about-us', { user: req.session.userId });
+  res.render('about-us', { user: req.session.user });
 });
 
 app.get('/adoption-application', (req, res) => {
-  res.render('adoption-application', { user: req.session.userId });
+  res.render('adoption-application', { user: req.session.user });
 });
 
 app.get('/browse-pets', (req, res) => {
-  res.render('browse-pets', { user: req.session.userId });
+  res.render('browse-pets', { user: req.session.user });
 });
 
 app.get('/pet-compatibility', (req, res) => {
-  res.render('pet-compatibility', { user: req.session.userId });
+  res.render('pet-compatibility', { user: req.session.user });
 });
 
-
+app.get('/admin', (req, res) => {
+  res.render('admin', { user: req.session.user });
+});
 
 
 

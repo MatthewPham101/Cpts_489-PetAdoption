@@ -21,7 +21,7 @@ body {
 
 /* Shared Header */
 .auth-header {
-  width: 100%;
+  /*width: 100%;*/
   background-color: #ffe4f3;  /* Light pink background */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 15px 30px;
@@ -374,7 +374,7 @@ body {
 
 /* Footer */
 .auth-footer {
-  width: 100%;
+  /*width: 100%;*/
   text-align: center;
   padding: 10px;
   background: #ffe4f3;

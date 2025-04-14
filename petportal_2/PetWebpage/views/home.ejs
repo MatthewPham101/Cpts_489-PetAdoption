@@ -20,6 +20,9 @@
         <a href="/adoption-application">Adoption Application</a>
         <a href="/browse-pets">Browse Pets</a>
         <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+        <% if (user && user.role === 'admin') { %>
+          <a href="/admin">Admin Portal</a>
+        <% } %>
       </nav>
     </div>
     <div class="auth-buttons">
