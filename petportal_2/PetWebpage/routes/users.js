@@ -65,22 +65,14 @@ router.delete('/api/users/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+    else if (user == req.user) {
+      return res.status(403).json({ error: 'Cannot delete own account' });
+    }
     await user.destroy();
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
-
-/* GET user management page */
-router.get('/admin', function(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.redirect('/');
-  }
-  res.render('admin', { 
-    title: 'Manage Users',
-    user: req.user
-  });
 });
 
 module.exports = router;
