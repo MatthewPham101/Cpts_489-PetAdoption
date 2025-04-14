@@ -1,0 +1,293 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/base.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Edit Pet Profile</title>
+    </head>
+    <body>
+        <header class="auth-header">
+            <div class="nav-left">
+              <a href="/">
+                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+              </a>
+              <nav class="nav-links">
+                <% if (user && user.role === 'shelter') { %>
+                  <!-- Shelter-specific navigation -->
+                  <a href="/manage-pets">Manage Pets</a>
+                  <a href="/browse-applications">Browse Applications</a>
+                  <a href="/create-pet-profile">Create Pet Profile</a>
+                  <a href="/edit-shelter">Edit Shelter</a>
+                <% } else { %>
+                  <!-- Default/Adopter navigation -->
+                  <a href="/about-us">About Us</a>
+                  <a href="/adoption-application">Adoption Application</a>
+                  <a href="/browse-pets">Browse Pets</a>
+                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+                <% } %>
+              </nav>
+            </div>
+            <div class="auth-buttons">
+              <% if (user) { %>
+                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+              <% } else { %>
+                <a href="/auth/login" class="btn btn-secondary">Log In</a>
+                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+              <% } %>
+            </div>
+          </header>
+
+        <div class="about-content">
+            <h1>Edit Pet Profile</h1>
+            
+            <form action="/edit-pet/<%= pet.id %>" method="POST" enctype="multipart/form-data" class="pet-form">
+                <div class="form-group">
+                    <label for="photo">Pet Photo:</label>
+                    <% if (pet.photoPath) { %>
+                        <img src="<%= pet.photoPath %>" alt="Current pet photo" class="current-photo">
+                    <% } %>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                    <p class="form-hint">Leave blank to keep current photo</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Pet Name:</label>
+                    <input type="text" id="name" name="name" value="<%= pet.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Pet Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="dog" <%= pet.type === 'dog' ? 'selected' : '' %>>Dog</option>
+                        <option value="cat" <%= pet.type === 'cat' ? 'selected' : '' %>>Cat</option>
+                        <option value="other" <%= pet.type === 'other' ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="breed">Breed:</label>
+                    <input type="text" id="breed" name="breed" value="<%= pet.breed %>" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" name="age" min="0" value="<%= pet.age %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ageUnit">Age Unit:</label>
+                        <select id="ageUnit" name="ageUnit">
+                            <option value="weeks" <%= pet.ageUnit === 'weeks' ? 'selected' : '' %>>Weeks</option>
+                            <option value="months" <%= pet.ageUnit === 'months' ? 'selected' : '' %>>Months</option>
+                            <option value="years" <%= pet.ageUnit === 'years' ? 'selected' : '' %>>Years</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="male" <%= pet.gender === 'male' ? 'selected' : '' %>>Male</option>
+                            <option value="female" <%= pet.gender === 'female' ? 'selected' : '' %>>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size">Size:</label>
+                        <select id="size" name="size" required>
+                            <option value="small" <%= pet.size === 'small' ? 'selected' : '' %>>Small</option>
+                            <option value="medium" <%= pet.size === 'medium' ? 'selected' : '' %>>Medium</option>
+                            <option value="large" <%= pet.size === 'large' ? 'selected' : '' %>>Large</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="4" required><%= pet.description %></textarea>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="isVaccinated" name="isVaccinated" <%= pet.isVaccinated ? 'checked' : '' %>>
+                    <label for="isVaccinated">Vaccinated</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialNeeds">Special Needs (if any):</label>
+                    <textarea id="specialNeeds" name="specialNeeds" rows="2"><%= pet.specialNeeds || '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select id="status" name="status" required>
+                        <option value="available" <%= pet.status === 'available' ? 'selected' : '' %>>Available</option>
+                        <option value="pending" <%= pet.status === 'pending' ? 'selected' : '' %>>Pending Adoption</option>
+                        <option value="adopted" <%= pet.status === 'adopted' ? 'selected' : '' %>>Adopted</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Pet Profile</button>
+                    <a href="/manage-pets" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+    </body>
+</html>
+
+<style>
+    .pet-form {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #f9f5f7; 
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #5a3d5a; 
+        font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #d1c4d1; 
+        border-radius: 6px;
+        font-size: 16px;
+        background-color: white;
+        color: #333;
+        transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #9c7a9c; /* Darker purple when focused */
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(156, 122, 156, 0.2);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .checkbox-group input {
+        width: auto;
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    .checkbox-group label {
+        margin-bottom: 0;
+        color: #5a3d5a;
+        font-weight: normal;
+    }
+
+    .current-photo {
+        max-width: 200px;
+        max-height: 200px;
+        display: block;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: 2px solid #d1c4d1;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #ff6b9d;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #ff4785;
+    }
+
+    .btn-secondary {
+        background-color: #e0d6db;
+        color: #5a3d5a;
+    }
+
+    .btn-secondary:hover {
+        background-color: #d0c0c8;
+    }
+
+    .form-hint {
+        font-size: 14px;
+        color: #7a5c7a; 
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a3d5a'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 20px;
+        padding-right: 35px;
+    }
+
+    input[type="file"] {
+        padding: 8px;
+        border: 2px dashed #d1c4d1;
+        background-color: #f9f5f7;
+    }
+
+    input[type="file"]:focus {
+        border-color: #9c7a9c;
+    }
+</style>

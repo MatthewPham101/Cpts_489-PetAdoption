@@ -5,60 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-router.get('/manage-pets', async (req, res) => {
-  try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
-      return res.redirect('/');
-    }
-
-    // Make sure association alias matches the one from models/index.js
-    const shelterWithPets = await ShelterProfile.findOne({
-      where: { userId: req.session.user.id },
-      include: [
-        {
-          model: Pet,
-          as: 'pets'
-        }
-      ]
-    });
-
-    if (!shelterWithPets) {
-      return res.redirect('/');
-    }
-
-    res.render('manage-pets', {
-      title: 'Manage Pets',
-      user: req.session.user,
-      pets: shelterWithPets.pets || []
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Server Error');
-  }
-});
-
-
-router.get('/browse-applications', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
-    return res.redirect('/');
-  }
-  res.render('browse-applications', { 
-    title: 'Browse Applications',
-    user: req.session.user 
-  });
-});
-
-router.get('/create-pet-profile', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
-    return res.redirect('/');
-  }
-  res.render('create-pet-profile', { 
-    title: 'Create Pet Profile',
-    user: req.session.user 
-  });
-});
-
-// 2. Set up file upload configuration
+// ===== Multer Configuration =====
 const uploadDir = path.join(__dirname, '../public/pets');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -86,22 +33,200 @@ const upload = multer({
     }
   }
 });
+// ===== End Multer Configuration =====
 
-// 3. Add the POST route for form submission
+
+router.get('/manage-pets', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.redirect('/');
+    }
+
+    const shelterWithPets = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id },
+      include: [
+        {
+          model: Pet,
+          as: 'pets'
+        }
+      ]
+    });
+
+    if (!shelterWithPets) {
+      return res.redirect('/');
+    }
+
+    res.render('manage-pets', {
+      title: 'Manage Pets',
+      user: req.session.user,
+      pets: shelterWithPets.pets || []
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.post('/delete-pet/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can delete pets');
+    }
+
+    const pet = await Pet.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: ShelterProfile,
+        as: 'shelter',
+        where: { userId: req.session.user.id }
+      }]
+    });
+
+    if (!pet) {
+      return res.status(404).send('Pet not found or you do not have permission to delete it');
+    }
+
+    if (pet.photoPath) {
+      const photoPath = path.join(__dirname, '../public', pet.photoPath);
+      fs.unlink(photoPath, (err) => {
+        if (err) console.error('Error deleting pet photo:', err);
+      });
+    }
+
+    await pet.destroy();
+    res.redirect('/manage-pets');
+  } catch (error) {
+    console.error('Error deleting pet:', error);
+    res.status(500).send('Server error while deleting pet');
+  }
+});
+
+router.get('/edit-pet/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.redirect('/');
+    }
+
+    const pet = await Pet.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: ShelterProfile,
+        as: 'shelter',
+        where: { userId: req.session.user.id }
+      }]
+    });
+
+    if (!pet) {
+      return res.status(404).send('Pet not found or you do not have permission to edit it');
+    }
+
+    res.render('edit-pet', {
+      title: 'Edit Pet Profile',
+      user: req.session.user,
+      pet: pet.get({ plain: true })
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can edit pets');
+    }
+
+    const pet = await Pet.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: ShelterProfile,
+        as: 'shelter',
+        where: { userId: req.session.user.id }
+      }]
+    });
+
+    if (!pet) {
+      return res.status(404).send('Pet not found or you do not have permission to edit it');
+    }
+
+    const { name, type, breed, age, ageUnit, gender, size, description, isVaccinated, specialNeeds, status } = req.body;
+    
+    const updateData = {
+      name,
+      type,
+      breed,
+      age: parseInt(age),
+      ageUnit,
+      gender,
+      size,
+      description,
+      isVaccinated: isVaccinated === 'on',
+      specialNeeds: specialNeeds || null,
+      status
+    };
+
+    if (req.file) {
+      if (pet.photoPath) {
+        const oldPhotoPath = path.join(__dirname, '../public', pet.photoPath);
+        fs.unlink(oldPhotoPath, (err) => {
+          if (err) console.error('Error deleting old photo:', err);
+        });
+      }
+      updateData.photoPath = '/pets/' + path.basename(req.file.path);
+    }
+
+    await pet.update(updateData);
+    res.redirect('/manage-pets');
+  } catch (error) {
+    console.error('Error updating pet:', error);
+    
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting uploaded file:', err);
+      });
+    }
+    
+    res.status(500).render('error', { 
+      message: 'Error updating pet profile',
+      error: error.message,
+      user: req.session.user
+    });
+  }
+});
+
+router.get('/browse-applications', (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'shelter') {
+    return res.redirect('/');
+  }
+  res.render('browse-applications', { 
+    title: 'Browse Applications',
+    user: req.session.user 
+  });
+});
+
+router.get('/create-pet-profile', (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'shelter') {
+    return res.redirect('/');
+  }
+  res.render('create-pet-profile', { 
+    title: 'Create Pet Profile',
+    user: req.session.user 
+  });
+});
+
 router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
   try {
     if (!req.session.user || req.session.user.role !== 'shelter') {
       return res.status(403).send('Only shelters can create pet profiles');
     }
 
-    // Debug: Verify Pet model is available
     if (!Pet || typeof Pet.create !== 'function') {
       throw new Error('Pet model is not properly initialized');
     }
 
     const { name, type, breed, age, ageUnit, gender, size, description, isVaccinated, specialNeeds } = req.body;
     
-    // Fetch the shelter profile based on the user id
     const shelter = await ShelterProfile.findOne({
       where: { userId: req.session.user.id }
     });
@@ -110,7 +235,6 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
       return res.status(404).send('Shelter profile not found.');
     }
 
-    // Create the pet with the correct shelterId
     const petData = {
       name,
       type,
@@ -123,15 +247,11 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
       isVaccinated: isVaccinated === 'on',
       specialNeeds: specialNeeds || null,
       photoPath: req.file ? '/pets/' + path.basename(req.file.path) : null,
-      shelterId: shelter.id, // Use the shelter's ID here
+      shelterId: shelter.id,
       status: 'available'
     };
 
-    console.log('Attempting to create pet with:', petData);
-    
     const newPet = await Pet.create(petData);
-    console.log('Pet created successfully:', newPet.id);
-    
     res.redirect('/manage-pets');
   } catch (error) {
     console.error('Full error stack:', error);
@@ -155,8 +275,6 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
   }
 });
 
-
-
 router.get('/edit-shelter', async (req, res) => {
   if (!req.session.user || req.session.user.role !== 'shelter') {
     return res.redirect('/');
@@ -173,7 +291,6 @@ router.get('/edit-shelter', async (req, res) => {
   });
 });
 
-// POST /edit-shelter
 router.post('/edit-shelter', async (req, res) => {
   if (!req.session.user || req.session.user.role !== 'shelter') {
     return res.redirect('/');
@@ -197,7 +314,6 @@ router.post('/edit-shelter', async (req, res) => {
     });
 
     if (!created) {
-      // Update existing profile
       await profile.update({
         shelterName,
         phone,
@@ -217,7 +333,6 @@ router.post('/edit-shelter', async (req, res) => {
 });
 
 
-// General routes (could also be moved to another router)
 router.get('/about-us', (req, res) => {
   res.render('about-us', { 
     title: 'About Us',
