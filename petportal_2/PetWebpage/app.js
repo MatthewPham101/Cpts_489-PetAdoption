@@ -59,37 +59,10 @@ syncDatabase();
 // Route handlers
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/users', usersRouter);
+app.use('/', usersRouter); 
 app.use('/', shelterRouter); // Now properly defined
 
-// Individual routes (consider moving these to separate router files)
-app.get('/about-us', (req, res) => {
-  res.render('about-us', { 
-    user: req.session.user || null,
-    title: 'About Us'
-  });
-});
 
-app.get('/adoption-application', (req, res) => {
-  res.render('adoption-application', { 
-    user: req.session.user || null,
-    title: 'Adoption Application' 
-  });
-});
-
-app.get('/browse-pets', (req, res) => {
-  res.render('browse-pets', { 
-    user: req.session.user || null,
-    title: 'Browse Pets'
-  });
-});
-
-app.get('/pet-compatibility', (req, res) => {
-  res.render('pet-compatibility', { 
-    user: req.session.user || null,
-    title: 'Pet Compatibility Quiz'
-  });
-});
 
 // Error handlers
 app.use(function(req, res, next) {
