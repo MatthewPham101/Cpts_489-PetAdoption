@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/users');
 
 // Helper function for flash messages
@@ -65,7 +66,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Create user
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hashSync(password, 10);
     const newUser = await User.create({
       firstName,
       lastName,
@@ -103,7 +104,7 @@ router.post('/login', async (req, res) => {
       return res.redirect('/auth/login');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) {
       setFlashMessage(req, 'error', 'Invalid email or password');
       return res.redirect('/auth/login');

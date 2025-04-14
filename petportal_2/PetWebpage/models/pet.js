@@ -55,6 +55,20 @@ const Pet = sequelize.define('Pet', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+
+  photoPath: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  shelterId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
+  }
+
 }, {
   tableName: 'pets',
   indexes: [
@@ -67,4 +81,4 @@ const Pet = sequelize.define('Pet', {
   ]
 });
 
-module.exports = Pet;
+module.exports = { Pet }; 
