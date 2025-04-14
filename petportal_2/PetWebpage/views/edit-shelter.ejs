@@ -6,43 +6,37 @@
         <link rel="stylesheet" href="/stylesheets/base.css">
 
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <title>Pet Profile</title>
-        <script>
-            function loadPetDetails() {
-                const params = new URLSearchParams(window.location.search);
-                const petName = params.get("name") || "Unknown Pet";
-                const petImage = params.get("image") || "assets/default-pet.avif";
-                const petType = params.get("type") || "Unkown Type";
-                const petAge = params.get("age") || "Unkown Age";
-                const petGender = params.get("gender") || "Unkown Gender";
-                const petDesc = params.get("desc") || "No description available";
-
-                document.getElementById("pet-name").textContent = petName;
-                document.getElementById("pet-image").src = petImage;
-                document.getElementById("pet-type").textContent = "Breed: " + petType;
-                document.getElementById("pet-age").textContent = "Age: " + petAge;
-                document.getElementById("pet-gender").textContent = "Gender: " + petGender;
-                document.getElementById("pet-desc").textContent = petDesc;
-            }
-        </script>
+        <title>Edit Shelter</title>
     </head>
-    <body onload="loadPetDetails()">
+    <body>
         <header class="auth-header">
             <div class="nav-left">
-                <a href="home.html">
-                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
-                </a>
-                <nav class="nav-links">
-                    <a href="about-us.html">About Us</a>
-                    <a href="adoption-application.html">Adoption Application</a>
-                    <a href="browse-pets.html">Browse Pets</a>
-                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
-                </nav>
+              <a href="/">
+                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+              </a>
+              <nav class="nav-links">
+                <% if (user && user.role === 'shelter') { %>
+                  <a href="/manage-pets">Manage Pets</a>
+                  <a href="/browse-applications">Browse Applications</a>
+                  <a href="/create-pet-profile">Create Pet Profile</a>
+                  <a href="/edit-shelter">Edit Shelter</a>
+                <% } else { %>
+                  <a href="/about-us">About Us</a>
+                  <a href="/adoption-application">Adoption Application</a>
+                  <a href="/browse-pets">Browse Pets</a>
+                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+                <% } %>
+              </nav>
             </div>
             <div class="auth-buttons">
-                <a href="login.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
-            </div>        
+              <% if (user) { %>
+                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+              <% } else { %>
+                <a href="/auth/login" class="btn btn-secondary">Log In</a>
+                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+              <% } %>
+            </div>
         </header>
 
         <div class="about-content">
@@ -50,55 +44,62 @@
         </div>
 
         <div class="pet-profile-container">
-            <form action="create-pet-profile" method="POST">
+            <form action="/edit-shelter" method="POST">
                 <div class="mb-3">
-                    <label for="phone-number" class="form-label">Phone Number</label>
-                    <input type="phone-number" id="phone-number" name="phone-number" class="form-control" required />
+                    <label for="shelterName" class="form-label">Shelter Name</label>
+                    <input type="text" id="shelterName" name="shelterName" class="form-control" value="<%= shelter?.shelterName || '' %>" required />
                 </div>
                 <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" value="<%= shelter?.phone || '' %>" required />
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" value="<%= shelter?.address || '' %>" required />
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" id="city" name="city" class="form-control" value="<%= shelter?.city || '' %>" required />
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <input type="text" id="state" name="state" class="form-control" value="<%= shelter?.state || '' %>" required />
+                </div>
+                <div class="mb-3">
+                    <label for="zipCode" class="form-label">Zip Code</label>
+                    <input type="text" id="zipCode" name="zipCode" class="form-control" value="<%= shelter?.zipCode || '' %>" required />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="4" required><%= shelter?.description || '' %></textarea>
+                </div>
+
+                <!-- Optional: Your existing fields -->
+                <div class="mb-3">
                     <label for="opening-time" class="form-label">Opening Time</label>
-                    <input type="time" id="opening-time" name="opening-time" class="form-control" required />
+                    <input type="time" id="opening-time" name="opening-time" class="form-control" />
                 </div>
                 <div class="mb-3">
                     <label for="closing-time" class="form-label">Closing Time</label>
-                    <input type="time" id="closing-time" name="closing-time" class="form-control" required />
+                    <input type="time" id="closing-time" name="closing-time" class="form-control" />
                 </div>
-                <div class="mb-3">
-                    <label for="policies" class="form-label">Policies</label>
-                    <div class="policies">
-                        <div>
-                            <input type="checkbox" id="p1" name="p1" />
-                            <label for="p1">Policy 1</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="p2" name="p2" />
-                            <label for="p2">Policy 2</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="p3" name="p3" />
-                            <label for="p3">Policy 3</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="p4" name="p4" />
-                            <label for="p3">Policy 4</label>
-                        </div>
-                    </div>
-                </div>
+       
+
                 <button type="submit" class="btn btn-primary">Update Shelter Settings</button>
             </form>
         </div>
-        
+
         <footer class="auth-footer">
             <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
         </footer>
+
+        <style>
+            .policies {
+                font-family: "roboto", sans-serif;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+            }
+        </style>
     </body>
 </html>
-
-<style>
-    .policies {
-        font-family: "roboto", sans-serif;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-    }
-</style>
