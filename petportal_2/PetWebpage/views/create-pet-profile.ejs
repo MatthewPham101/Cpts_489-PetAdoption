@@ -3,59 +3,147 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/stylesheets/base.css">
-
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <title>Browse Pets</title>
+        <title>Create Pet Profile</title>
     </head>
     <body>
         <header class="auth-header">
             <div class="nav-left">
-                <a href="home.html">
-                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
-                </a>
-                <nav class="nav-links">
-                    <a href="about-us.html">About Us</a>
-                    <a href="adoption-application.html">Adoption Application</a>
-                    <a href="browse-pets.html">Browse Pets</a>
-                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
-                </nav>
+              <a href="/">
+                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+              </a>
+              <nav class="nav-links">
+                <% if (user && user.role === 'shelter') { %>
+                  <!-- Shelter-specific navigation -->
+                  <a href="/manage-pets">Manage Pets</a>
+                  <a href="/browse-applications">Browse Applications</a>
+                  <a href="/create-pet-profile">Create Pet Profile</a>
+                  <a href="/edit-shelter">Edit Shelter</a>
+                <% } else { %>
+                  <!-- Default/Adopter navigation -->
+                  <a href="/about-us">About Us</a>
+                  <a href="/adoption-application">Adoption Application</a>
+                  <a href="/browse-pets">Browse Pets</a>
+                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+                <% } %>
+              </nav>
             </div>
             <div class="auth-buttons">
-                <a href="login.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+              <% if (user) { %>
+                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+              <% } else { %>
+                <a href="/auth/login" class="btn btn-secondary">Log In</a>
+                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+              <% } %>
             </div>
-        </header>
+          </header>
 
         <div class="about-content">
             <h1>Create Pet Profile</h1>
         </div>
 
         <div class="create-profile">
-            <form action="create-pet-profile" method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name:</label>
-                    <input type="name" id="name" name="name" class="form-control" required />
+            <form action="/create-pet-profile" method="POST" enctype="multipart/form-data">
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h3>Basic Information</h3>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Pet Name:</label>
+                        <input type="text" id="name" name="name" class="form-control" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Animal Type:</label>
+                        <select id="type" name="type" class="form-control" required>
+                            <option value="">Select Type</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="bird">Bird</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="breed" class="form-label">Breed:</label>
+                        <input type="text" id="breed" name="breed" class="form-control" />
+                    </div>
+
+                    <!-- Added Size Field -->
+                    <div class="mb-3">
+                        <label for="size" class="form-label">Size:</label>
+                        <select id="size" name="size" class="form-control" required>
+                            <option value="">Select Size</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="extra-large">Extra Large</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Type:</label>
-                    <input type="type" id="type" name="type" class="form-control" required />
+                
+                <!-- Age & Gender -->
+                <div class="form-section">
+                    <h3>Age & Gender</h3>
+                    <div class="form-row">
+                        <div class="mb-3 col">
+                            <label for="age" class="form-label">Age:</label>
+                            <input type="number" id="age" name="age" class="form-control" min="0" required />
+                        </div>
+                        
+                        <div class="mb-3 col">
+                            <label for="ageUnit" class="form-label">Unit:</label>
+                            <select id="ageUnit" name="ageUnit" class="form-control" required>
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender:</label>
+                        <select id="gender" name="gender" class="form-control" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="age" class="form-label">Age:</label>
-                    <input type="age" id="age" name="age" class="form-control" required />
+                
+                <!-- Description -->
+                <div class="form-section">
+                    <h3>Description</h3>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Tell us about this pet:</label>
+                        <textarea id="description" name="description" class="form-control-desc" required></textarea>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="gender" class="form-label">Gender:</label>
-                    <input type="gender" id="gender" name="gender" class="form-control" required />
+                
+                <!-- Photo Upload -->
+                <div class="form-section">
+                    <h3>Pet Photo</h3>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Upload a clear photo:</label>
+                        <input type="file" id="photo" name="photo" class="form-control-photo" accept="image/*" required />
+                        <small class="form-text">JPG or PNG, max 5MB</small>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description:</label>
-                    <input type="description" id="description" name="description" class="form-control-desc" required />
+                
+                <!-- Health Info -->
+                <div class="form-section">
+                    <h3>Health Information</h3>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="isVaccinated" name="isVaccinated" class="form-check-input">
+                        <label for="isVaccinated" class="form-check-label">Vaccinated</label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="specialNeeds" class="form-label">Special Needs:</label>
+                        <textarea id="specialNeeds" name="specialNeeds" class="form-control"></textarea>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="photo" class="form-label">Add Photo:</label>
-                    <input type="image" id="photo" name="photo" class="form-control-photo" required />
-                </div>
+                
                 <button type="submit" class="btn btn-primary">Create Profile</button>
             </form>
         </div>
@@ -74,6 +162,22 @@
         justify-content: center;
         width: 60%;
     }
+    
+    .form-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .form-row .col {
+        flex: 1;
+    }
 
     .form-control-desc {
         width: 100%;
@@ -83,6 +187,7 @@
         border-radius: 5px;
         font-size: 16px;
         height: 100px;
+        resize: vertical;
     }
 
     .form-control-photo {
@@ -92,6 +197,12 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
-        height: 20px;
+    }
+    
+    .form-text {
+        display: block;
+        margin-top: 5px;
+        color: #666;
+        font-size: 0.9em;
     }
 </style>

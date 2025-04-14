@@ -3,28 +3,41 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/stylesheets/base.css">
-
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <title>Browse Pets</title>
+        <title>Manage Pets</title>
     </head>
     <body>
         <header class="auth-header">
             <div class="nav-left">
-                <a href="home.html">
-                    <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
-                </a>
-                <nav class="nav-links">
-                    <a href="about-us.html">About Us</a>
-                    <a href="adoption-application.html">Adoption Application</a>
-                    <a href="browse-pets.html">Browse Pets</a>
-                    <a href="pet-compatibility.html">Pet Compatibility Quiz</a>
-                </nav>
+              <a href="/">
+                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+              </a>
+              <nav class="nav-links">
+                <% if (user && user.role === 'shelter') { %>
+                  <!-- Shelter-specific navigation -->
+                  <a href="/manage-pets">Manage Pets</a>
+                  <a href="/browse-applications">Browse Applications</a>
+                  <a href="/create-pet-profile">Create Pet Profile</a>
+                  <a href="/edit-shelter">Edit Shelter</a>
+                <% } else { %>
+                  <!-- Default/Adopter navigation -->
+                  <a href="/about-us">About Us</a>
+                  <a href="/adoption-application">Adoption Application</a>
+                  <a href="/browse-pets">Browse Pets</a>
+                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+                <% } %>
+              </nav>
             </div>
             <div class="auth-buttons">
-                <a href="login.html" class="btn btn-secondary">Log In</a>
-                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+              <% if (user) { %>
+                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+              <% } else { %>
+                <a href="/auth/login" class="btn btn-secondary">Log In</a>
+                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+              <% } %>
             </div>
-        </header>
+          </header>
 
         <div class="about-content">
             <h1>Manage Pets</h1>
@@ -39,74 +52,33 @@
             </div>
 
             <div class="pets-gallery">
-                <!-- Pet 1 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item dog inside">
-                        <a href="pet-profile.html?name=Buddy&image=assets/bigger-white-dog.avif&type=Siberian Husky&age=3&gender=Male&desc=Buddy is an energetic and loving dog who enjoys outdoor activities.">
-                            <img src="assets/bigger-white-dog.avif" alt="Pet 1" class="pet-image">
-                            <p class="pet-name">Buddy</p>
-                        </a>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
-                <!-- Pet 2 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item cat inside">
-                        <img src="assets/orange-cat.avif" alt="Pet 2" class="pet-image">
-                        <p class="pet-name">Whiskers</p>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
-                <!-- Pet 3 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item dog inside">
-                        <img src="assets/black-dog.avif" alt="Pet 3" class="pet-image">
-                        <p class="pet-name">Rex</p>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
-                <!-- Pet 4 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item dog inside">
-                        <img src="assets/border-collie.avif" alt="Pet 4" class="pet-image">
-                        <p class="pet-name">Frodo</p>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
-                <!-- Pet 5 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item cat inside">
-                        <img src="assets/white-cat.avif" alt="Pet 5" class="pet-image">
-                        <p class="pet-name">Luna</p>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
-                <!-- Pet 6 -->
-                <div class="pet-wrapper">
-                    <div class="pet-item dog inside">
-                        <img src="assets/white-dog.avif" alt="Pet 6" class="pet-image">
-                        <p class="pet-name">Max</p>
-                    </div>
-                    <div class="edit-bar">
-                        <button class="edit-button">Edit</button>
-                        <button class="edit-button">Delete</button>
-                    </div>
-                </div>
+                <% if (pets && pets.length > 0) { %>
+                    <% pets.forEach(pet => { %>
+                        <div class="pet-wrapper">
+                            <div class="pet-item <%= pet.type %> inside">
+                                <a href="/pet-profile/<%= pet.id %>">
+                                    <% 
+                                    let imageUrl = "/assets/default-pet.png";
+                                    if (pet.photoPath != "") {
+                                        imageUrl = pet.photoPath;
+                                    }
+                                    %>
+                                    <img src="<%= imageUrl %>" alt="<%= pet.name %>" class="pet-image">
+                                    <p class="pet-name"><%= pet.name %></p>
+                                    <p class="pet-status">Status: <%= pet.status %></p>
+                                </a>
+                            </div>
+                            <div class="edit-bar">
+                                <a href="/edit-pet/<%= pet.id %>" class="edit-button">Edit</a>
+                                <form action="/delete-pet/<%= pet.id %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="edit-button" onclick="return confirm('Are you sure you want to delete <%= pet.name %>?')">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p class="no-pets">You haven't added any pets yet. <a href="/create-pet-profile">Add your first pet</a></p>
+                <% } %>
             </div>
         </div>
 
@@ -122,9 +94,9 @@
 
                 petItems.forEach(pet => {
                     if (filterValue === 'all' || pet.classList.contains(filterValue)) {
-                        pet.style.display = 'block';
+                        pet.parentElement.style.display = 'block';
                     } else {
-                        pet.style.display = 'none';
+                        pet.parentElement.style.display = 'none';
                     }
                 });
             }
@@ -137,6 +109,7 @@
         display: block;
         height: 100%;
         text-align: center;
+        margin-bottom: 20px;
     }
 
     .edit-button {
@@ -147,7 +120,11 @@
         border-radius: 8px;
         cursor: pointer;
         width: 48%;
+        text-decoration: none;
+        color: black;
+        display: inline-block;
     }
+
     .inside {
         height: 90%;
     }
@@ -162,5 +139,26 @@
         justify-content: space-between;
         flex-direction: row;
         padding: 5px 0px;
+    }
+
+    .pet-status {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .no-pets {
+        text-align: center;
+        font-size: 18px;
+        margin: 40px 0;
+    }
+
+    .no-pets a {
+        color: #ff6b9d;
+        text-decoration: none;
+    }
+
+    .no-pets a:hover {
+        text-decoration: underline;
     }
 </style>
