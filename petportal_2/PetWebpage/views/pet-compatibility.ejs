@@ -15,7 +15,7 @@
             <h1>Pet Compatibility Quiz</h1>
             <p>Answer the questions below to find the best pet match for you.</p>
             
-            <form id="quiz-form">
+            <form id="quiz-form" onsubmit="return validateQuiz()" action="/pet-compatability/results" method="POST">
                 <div class="quiz-question">
                     <p>1. How much time can you dedicate to your pet daily?</p>
                     <label><input type="radio" name="time" value="low"> Less than 1 hour</label>
@@ -38,7 +38,7 @@
 
                 <div class="quiz-question">
                     <p>4. What kind of personality do you prefer in a pet?</p>
-                    <label><input type="radio" name="personality" value="calm"> Calm and indepent</label>
+                    <label><input type="radio" name="personality" value="calm"> Calm and independent</label>
                     <label><input type="radio" name="personality" value="playful"> Playful and energetic</label>
                     <label><input type="radio" name="personality" value="affectionate"> Affectionate and cuddly</label>
                 </div>
@@ -52,3 +52,16 @@
         </footer>
     </body>
 </html>
+
+<script>
+    function validateQuiz() {
+        const questions = ["time", "home", "other-pets", "personality"];
+        for (let q of questions) {
+            if (!document.querySelector(`input[name="${q}"]:checked`)) {
+                alert("Please answer all questions.");
+                return false;
+            }
+        }
+        return true;
+    }
+</script>

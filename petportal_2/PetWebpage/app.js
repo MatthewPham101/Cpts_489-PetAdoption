@@ -64,7 +64,40 @@ app.get('/pet-compatability', (req, res) => {
 });
 
 
+app.post('/pet-compatability/results', (req, res) => {
+  const { time, home, 'other-pets': otherPets, personality } = req.body;
 
+  function getRecommendPet() {
+    if (time === 'low')
+    {
+      if (home === 'apartment') return 'Cat';
+      if (home === 'house' && personality === 'affectionate') return 'Rabbit';
+      if (home === 'farm') return 'Barn Cat';
+      return 'Older Cat';
+    }
+
+    if (time === 'medium')
+    {
+      if (home === 'apartment') return 'Small Dog';
+      if (home === 'house') return 'Medium Dog';
+      if (home === 'farm') return 'Goat or Farm Cat';
+    }
+
+    if (time === 'low')
+    {
+      if (home === 'apartment' && personality === 'affectionate') return 'Parrot or Ferret';
+      if (home === 'house' && personality === 'playful') return 'Labrador Retriever';
+      if (home === 'house' && personality === 'affectionate') return 'Golden Retriever';
+      if (home === 'farm') return 'Border Collie';
+    }
+
+    return 'Mixed breed or rescue animal';
+  }
+
+  const recommendation = getRecommendPet();
+
+  res.render('pet-quiz-result', {recommendation});
+})
 
 
 
