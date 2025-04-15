@@ -195,14 +195,100 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
   }
 });
 
-router.get('/browse-applications', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
-    return res.redirect('/');
+router.get('/browse-applications', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.redirect('/');
+    }
+
+    const applications = await AdoptionApplication.findAll({
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          where: { shelterId: req.session.user.id },
+          include: [{
+            model: ShelterProfile,
+            as: 'shelter'
+          }]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.render('browse-applications', {
+      title: 'Browse Applications',
+      user: req.session.user,
+      applications: applications.map(app => app.get({ plain: true }))
+    });
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).send('Server Error');
   }
-  res.render('browse-applications', { 
-    title: 'Browse Applications',
-    user: req.session.user 
-  });
+});
+
+// Add approval/rejection routes
+router.post('/approve-application/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can approve applications');
+    }
+
+    const application = await AdoptionApplication.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: Pet,
+        as: 'pet',
+        where: { shelterId: req.session.user.id }
+      }]
+    });
+
+    if (!application) {
+      return res.status(404).send('Application not found or not authorized');
+    }
+
+    await application.update({ status: 'approved' });
+    await application.pet.update({ status: 'adopted' });
+    
+    res.redirect('/browse-applications');
+  } catch (error) {
+    console.error('Error approving application:', error);
+    res.status(500).send('Server error while approving application');
+  }
+});
+
+router.post('/reject-application/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can reject applications');
+    }
+
+    const application = await AdoptionApplication.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: Pet,
+        as: 'pet',
+        where: { shelterId: req.session.user.id }
+      }]
+    });
+
+    if (!application) {
+      return res.status(404).send('Application not found or not authorized');
+    }
+
+    await application.update({ status: 'rejected' });
+    await application.pet.update({ status: 'available' });
+    
+    res.redirect('/browse-applications');
+  } catch (error) {
+    console.error('Error rejecting application:', error);
+    res.status(500).send('Server error while rejecting application');
+  }
 });
 
 router.get('/create-pet-profile', (req, res) => {
