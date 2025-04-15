@@ -1,155 +1,146 @@
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/stylesheets/base.css">
-
-        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <title>Browse Pets</title>
-    </head>
-    <body>
-        <header class="auth-header">
-            <div class="nav-left">
-              <a href="/">
-                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
-              </a>
-              <nav class="nav-links">
-                <% if (user && user.role === 'shelter') { %>
-                  <!-- Shelter-specific navigation -->
-                  <a href="/manage-pets">Manage Pets</a>
-                  <a href="/browse-applications">Browse Applications</a>
-                  <a href="/create-pet-profile">Create Pet Profile</a>
-                  <a href="/edit-shelter">Edit Shelter</a>
-                <% } else { %>
-                  <!-- Default/Adopter navigation -->
-                  <a href="/about-us">About Us</a>
-                  <a href="/adoption-application">Adoption Application</a>
-                  <a href="/browse-pets">Browse Pets</a>
-                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
-                <% } %>
-              </nav>
-            </div>
-            <div class="auth-buttons">
-              <% if (user) { %>
-                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
-                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
-              <% } else { %>
-                <a href="/auth/login" class="btn btn-secondary">Log In</a>
-                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
-              <% } %>
-            </div>
-          </header>
-
-        <div class="about-content">
-            <h1>Manage Applications</h1>
-            <div class="filter-container">
-                <label for="filter">Filter by Type:</label>
-                <select id="filter" name="filter" onchange="filterPets()">
-                    <option value="all">All</option>
-                    <option value="dog">Dogs</option>
-                    <option value="cat">Cats</option>
-                    <option value="other">Other Pets</option>
-                </select>
-            </div>
-
-            <div class="apps-gallery">
-                <!-- Pet 1 -->
-                <div>
-                    <div class="pet-item dog">
-                        <h2>Application from: John</h2>
-                        <h3>Looking for: Buddy</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-                <!-- Pet 2 -->
-                <div>
-                    <div class="pet-item cat">
-                        <h2>Application from: Mary</h2>
-                        <h3>Looking for: Luna</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-                <!-- Pet 3 -->
-                <div>
-                    <div class="pet-item dog">
-                        <h2>Application from: Daniel</h2>
-                        <h3>Looking for: Rex</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-                <!-- Pet 4 -->
-                <div>
-                    <div class="pet-item cat">
-                        <h2>Application from: Joe</h2>
-                        <h3>Looking for: Luna</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-                <!-- Pet 5 -->
-                <div>
-                    <div class="pet-item dog">
-                        <h2>Application from: Ava</h2>
-                        <h3>Looking for: Max</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="pet-item dog">
-                        <h2>Application from: Ava</h2>
-                        <h3>Looking for: Luna</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="pet-item cat">
-                        <h2>Application from: Connor</h2>
-                        <h3>Looking for: Whiskers</h3>
-                        <button class="btn btn-primary">Review</button>
-                    </div>
-                </div>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/base.css">
+    <title>Browse Applications</title>
+    <style>
+        .applications-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .application-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .application-pet {
+            font-weight: bold;
+            color: #5a3d5a;
+        }
+        
+        .application-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+        
+        .application-detail {
+            margin: 10px 0;
+        }
+        
+        .application-actions {
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            margin-right: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="auth-header">
+        <div class="nav-left">
+        <a href="/">
+            <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
+        </a>
+        <nav class="nav-links">
+            <% if (user && user.role === 'shelter') { %>
+            <!-- Shelter-specific navigation -->
+            <a href="/manage-pets">Manage Pets</a>
+            <a href="/browse-applications">Browse Applications</a>
+            <a href="/create-pet-profile">Create Pet Profile</a>
+            <a href="/edit-shelter">Edit Shelter</a>
+            <% } else { %>
+            <!-- Default/Adopter navigation -->
+            <a href="/about-us">About Us</a>
+            <a href="/adoption-application">Adoption Application</a>
+            <a href="/browse-pets">Browse Pets</a>
+            <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+            <% } %>
+        </nav>
         </div>
+        <div class="auth-buttons">
+        <% if (user) { %>
+            <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+            <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+        <% } else { %>
+            <a href="/auth/login" class="btn btn-secondary">Log In</a>
+            <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+        <% } %>
+        </div>
+    </header>
 
-        <footer class="auth-footer">
-            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
-        </footer>
+    <div class="applications-container">
+        <h1>Adoption Applications</h1>
+        
+        <% if (applications && applications.length > 0) { %>
+            <% applications.forEach(app => { %>
+                <div class="application-card">
+                    <div class="application-header">
+                        <span class="application-pet">Pet: <%= app.petName %></span>
+                        <span class="application-status status-<%= app.status %>">
+                            <%= app.status.charAt(0).toUpperCase() + app.status.slice(1) %>
+                        </span>
+                    </div>
+                    
+                    <div class="application-detail"><strong>Applicant:</strong> <%= app.applicantName %></div>
+                    <div class="application-detail"><strong>Email:</strong> <%= app.applicantEmail %></div>
+                    <div class="application-detail"><strong>Phone:</strong> <%= app.applicantPhone %></div>
+                    <div class="application-detail"><strong>Address:</strong> <%= app.applicantAddress %></div>
+                    <div class="application-detail"><strong>Living Situation:</strong> <%= app.livingSituation %></div>
+                    <div class="application-detail"><strong>Reason for Adoption:</strong> <%= app.adoptionReason %></div>
+                    <div class="application-detail"><strong>Applied On:</strong> <%= new Date(app.applicationDate).toLocaleDateString() %></div>
+                    
+                    <% if (app.status === 'pending') { %>
+                        <div class="application-actions">
+                            <a href="/approve-application/<%= app.id %>" class="btn btn-approve">Approve</a>
+                            <a href="/reject-application/<%= app.id %>" class="btn btn-reject">Reject</a>
+                        </div>
+                    <% } %>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No applications found.</p>
+        <% } %>
+    </div>
 
-        <script>
-            // Filter function to show pets based on selected type
-            function filterPets() {
-                const filterValue = document.getElementById('filter').value;
-                const petItems = document.querySelectorAll('.pet-item');
-
-                petItems.forEach(pet => {
-                    if (filterValue === 'all' || pet.classList.contains(filterValue)) {
-                        pet.style.display = 'block';
-                    } else {
-                        pet.style.display = 'none';
-                    }
-                });
-            }
-        </script>
-    </body>
+    <footer class="auth-footer">
+        <p>&copy; 2025 Pet Portal | <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+    </footer>
+</body>
 </html>
-
-<style>
-    .pet-wrapper {
-        display: block;
-        height: 100%;
-        text-align: center;
-    }
-
-    .apps-gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        justify-items: center;
-        padding: 20px;
-    }
-
-    .apps-gallery h2, .apps-gallery h3 {
-        color: black;
-    }
-</style>

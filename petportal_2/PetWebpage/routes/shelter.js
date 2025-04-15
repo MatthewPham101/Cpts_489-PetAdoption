@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Pet, ShelterProfile, User } = require('../models');
+const { Pet, ShelterProfile, User, AdoptionApplication } = require('../models');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -195,14 +195,119 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
   }
 });
 
-router.get('/browse-applications', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
-    return res.redirect('/');
+router.get('/browse-applications', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.redirect('/');
+    }
+
+    // Find shelter profile for logged-in user
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.redirect('/');
+    }
+
+    const applications = await AdoptionApplication.findAll({
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          where: { shelterId: shelterProfile.id },
+          include: [{
+            model: ShelterProfile,
+            as: 'shelter'
+          }]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Transform applications data to flatten fields for the view
+    const transformedApplications = applications.map(app => {
+      const plainApp = app.get({ plain: true });
+      return {
+        ...plainApp,
+        petName: plainApp.pet ? plainApp.pet.name : 'Unknown',
+        applicationDate: plainApp.createdAt,
+      };
+    });
+
+    res.render('browse-applications', {
+      title: 'Browse Applications',
+      user: req.session.user,
+      applications: transformedApplications
+    });
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).send('Server Error');
   }
-  res.render('browse-applications', { 
-    title: 'Browse Applications',
-    user: req.session.user 
-  });
+});
+
+// Add approval/rejection routes
+router.post('/approve-application/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can approve applications');
+    }
+
+    const application = await AdoptionApplication.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: Pet,
+        as: 'pet',
+        where: { shelterId: req.session.user.id }
+      }]
+    });
+
+    if (!application) {
+      return res.status(404).send('Application not found or not authorized');
+    }
+
+    await application.update({ status: 'approved' });
+    await application.pet.update({ status: 'adopted' });
+    
+    res.redirect('/browse-applications');
+  } catch (error) {
+    console.error('Error approving application:', error);
+    res.status(500).send('Server error while approving application');
+  }
+});
+
+router.post('/reject-application/:id', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.status(403).send('Only shelters can reject applications');
+    }
+
+    const application = await AdoptionApplication.findOne({
+      where: { id: req.params.id },
+      include: [{
+        model: Pet,
+        as: 'pet',
+        where: { shelterId: req.session.user.id }
+      }]
+    });
+
+    if (!application) {
+      return res.status(404).send('Application not found or not authorized');
+    }
+
+    await application.update({ status: 'rejected' });
+    await application.pet.update({ status: 'available' });
+    
+    res.redirect('/browse-applications');
+  } catch (error) {
+    console.error('Error rejecting application:', error);
+    res.status(500).send('Server error while rejecting application');
+  }
 });
 
 router.get('/create-pet-profile', (req, res) => {

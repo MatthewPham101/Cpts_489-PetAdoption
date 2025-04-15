@@ -4,29 +4,99 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/stylesheets/base.css">
-
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-        <title>Pet Profile</title>
-        <script>
-            function loadPetDetails() {
-                const params = new URLSearchParams(window.location.search);
-                const petName = params.get("name") || "Unknown Pet";
-                const petImage = params.get("image") || "assets/default-pet.avif";
-                const petType = params.get("type") || "Unkown Type";
-                const petAge = params.get("age") || "Unkown Age";
-                const petGender = params.get("gender") || "Unkown Gender";
-                const petDesc = params.get("desc") || "No description available";
-
-                document.getElementById("pet-name").textContent = petName;
-                document.getElementById("pet-image").src = petImage;
-                document.getElementById("pet-type").textContent = "Breed: " + petType;
-                document.getElementById("pet-age").textContent = "Age: " + petAge;
-                document.getElementById("pet-gender").textContent = "Gender: " + petGender;
-                document.getElementById("pet-desc").textContent = petDesc;
+        <title><%= pet.name %> - Pet Profile</title>
+        <style>
+            .pet-profile-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px;
             }
-        </script>
+            
+            .pet-profile-item {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 40px;
+                background-color: #fff;
+                border-radius: 10px;
+                padding: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            
+            .pet-image {
+                width: 400px;
+                height: 400px;
+                object-fit: cover;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            .pet-details {
+                flex: 1;
+                min-width: 300px;
+            }
+            
+            .pet-details h2 {
+                color: #5a3d5a;
+                margin-top: 0;
+                font-size: 28px;
+            }
+            
+            .pet-info {
+                margin-bottom: 25px;
+            }
+            
+            .pet-info p {
+                margin: 8px 0;
+                font-size: 16px;
+                color: #333;
+            }
+            
+            .pet-info strong {
+                color: #5a3d5a;
+            }
+            
+            .shelter-info {
+                background-color: #f9f5f7;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 30px;
+            }
+            
+            .shelter-info h3 {
+                color: #5a3d5a;
+                margin-top: 0;
+            }
+            
+            .btn-primary {
+                display: inline-block;
+                padding: 12px 25px;
+                background-color: #ff6b9d;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-size: 16px;
+                margin-top: 20px;
+                transition: background-color 0.3s;
+            }
+            
+            .btn-primary:hover {
+                background-color: #ff4785;
+            }
+            
+            @media (max-width: 768px) {
+                .pet-profile-item {
+                    flex-direction: column;
+                }
+                
+                .pet-image {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+        </style>
     </head>
-    <body onload="loadPetDetails()">
+    <body>
         <header class="auth-header">
             <div class="nav-left">
               <a href="/">
@@ -60,18 +130,51 @@
           </header>
 
         <div class="about-content">
-            <h1>Meet <span id="pet-name"></span></h1>
+            <h1>Meet <%= pet.name %></h1>
         </div>
 
         <div class="pet-profile-container">
             <div class="pet-profile-item">
-                <img id="pet-image" class="pet-image" alt="Pet">
+                <img src="<%= pet.photoPath || '/assets/default-pet.png' %>" alt="<%= pet.name %>" class="pet-image">
                 <div class="pet-details">
-                    <p id="pet-type"></p>
-                    <p id="pet-age"></p>
-                    <p id="pet-gender"></p>
-                    <p id="pet-desc"></p>
-                    <a href="adoption-application.html" class="btn btn-primary">Apply for Adoption</a>
+                    <h2><%= pet.name %></h2>
+                    
+                    <div class="pet-info">
+                        <p><strong>Type:</strong> <%= pet.type.charAt(0).toUpperCase() + pet.type.slice(1) %></p>
+                        <p><strong>Breed:</strong> <%= pet.breed %></p>
+                        <p><strong>Age:</strong> <%= pet.age %> <%= pet.ageUnit %></p>
+                        <p><strong>Gender:</strong> <%= pet.gender.charAt(0).toUpperCase() + pet.gender.slice(1) %></p>
+                        <p><strong>Size:</strong> <%= pet.size.charAt(0).toUpperCase() + pet.gender.slice(1) %></p>
+                        <p><strong>Status:</strong> <span style="color: <%= pet.status === 'available' ? 'green' : 'orange' %>">
+                            <%= pet.status.charAt(0).toUpperCase() + pet.status.slice(1) %>
+                        </span></p>
+                        <p><strong>Vaccinated:</strong> <%= pet.isVaccinated ? 'Yes' : 'No' %></p>
+                        <% if (pet.specialNeeds) { %>
+                            <p><strong>Special Needs:</strong> <%= pet.specialNeeds %></p>
+                        <% } %>
+                    </div>
+                    
+                    <div class="pet-description">
+                        <h3>About <%= pet.name %></h3>
+                        <p><%= pet.description %></p>
+                    </div>
+                    
+                    <div class="shelter-info">
+                        <h3>Shelter Information</h3>
+                        <p><strong>Shelter:</strong> <%= pet.shelter.shelterName %></p>
+                        <p><strong>Location:</strong> <%= pet.shelter.city %>, <%= pet.shelter.state %></p>
+                        <p><strong>Address:</strong> <%= pet.shelter.address %>, <%= pet.shelter.zipCode %></p>
+                        <p><strong>Phone:</strong> <%= pet.shelter.phone %></p>
+                        <% if (pet.shelter.description) { %>
+                            <p><strong>About the Shelter:</strong> <%= pet.shelter.description %></p>
+                        <% } %>
+                    </div>
+                    
+                    <% if (pet.status === 'available') { %>
+                        <a href="/adoption-application?petId=<%= pet.id %>" class="btn-primary">Apply for Adoption</a>
+                    <% } else { %>
+                        <p class="not-available">This pet is not currently available for adoption.</p>
+                    <% } %>
                 </div>
             </div>
         </div>
