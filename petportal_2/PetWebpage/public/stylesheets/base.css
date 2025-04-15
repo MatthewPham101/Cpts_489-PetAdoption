@@ -29,6 +29,14 @@ body {
   justify-content: space-between;
 }
 
+.welcome-message {
+  margin-right: 15px;
+  color: #595758;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .logo {
   height: 50px;
 }
@@ -369,6 +377,22 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
   justify-content: center;
+}
+
+.result-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  text-align: center;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.result-highlight {
+  font-size: 2rem;
+  color: #595758;
+  margin: 1rem 0;
 }
 
 /* Footer */

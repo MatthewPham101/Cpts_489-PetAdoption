@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/base.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>Pet Quiz - Result</title>
+    </head>
+    <body>
+        <%- include('components/header') %>
+
+        <div class="result-container">
+            <h1>Your Perfect Pet Match</h1>
+            <p>Based on your answers, we think you would be a good match for:</p>
+            <h2 class="result-highlight"><%= recommendation %></h2>
+        </div>
+
+        <footer class="auth-footer">
+            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+    </body>
+</html>

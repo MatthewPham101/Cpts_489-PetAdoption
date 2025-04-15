@@ -1,15 +1,32 @@
-<% layout('layouts/base') -%>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/stylesheets/base.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <title>About Us - Pet Portal</title>
+    </head>
+    <body>
 
-<% block('head', () => { %>
-  <!-- Additional head content for this page -->
-<% }) %>
+        <!-- Header -->
+        <%- include('components/header') %>
 
-<div class="about-content">
-  <h1>About Pet Portal</h1>
-  <p>At Pet Portal, our mission is simple – to connect loving homes with pets in need...</p>
-  <img src="/assets/happy-pet-owner.avif" alt="Pet Owner" class="about-image">
-</div>
+        <!-- Main Section -->
+        <main class="about-main">
+            <div class="about-content">
+                <h1>About Pet Portal</h1>
+                <p>At Pet Portal, our mission is simple – to connect loving homes with pets in need. We provide a safe and user-friendly platform where you can browse adoptable pets, learn about responsible pet ownership, and find your perfect furry companion.</p>
+                <p>We believe that every pet deserves a loving home, and every pet owner deserves a loyal companion. Join us today and help make a difference!</p>
 
-<% block('scripts', () => { %>
-  <!-- Page-specific scripts -->
-<% }) %>
+                <img src="./assets/happy-pet-owner.avif" alt="Pet Owner" class="about-image">
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="auth-footer">
+            <p>&copy; 2025 Pet Portal | <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+        </footer>
+
+    </body>
+</html>

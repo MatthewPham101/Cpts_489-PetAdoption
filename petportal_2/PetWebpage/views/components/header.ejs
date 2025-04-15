@@ -1,0 +1,23 @@
+<header class="auth-header">
+    <div class="nav-left">
+        <a href="/">
+            <img src="assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo">
+        </a>
+        <nav class="nav-links">
+            <a href="/about-us">About Us</a>
+            <a href="/adoption-application">Adoption Application</a>
+            <a href="/browse-pets">Browse Pets</a>
+            <a href="/pet-compatability">Pet Compatibility Quiz</a>
+        </nav>
+    </div>
+    <div class="auth-buttons">
+        <% if (user) { %>
+
+          <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
+          <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+        <% } else { %>
+          <a href="/auth/login" class="btn btn-secondary">Log In</a>
+          <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+        <% } %>
+      </div>
+</header>
