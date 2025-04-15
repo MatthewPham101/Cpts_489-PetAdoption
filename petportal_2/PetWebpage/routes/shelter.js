@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Pet, ShelterProfile, User } = require('../models');
+const { Pet, ShelterProfile, User, AdoptionApplication } = require('../models');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -201,12 +201,21 @@ router.get('/browse-applications', async (req, res) => {
       return res.redirect('/');
     }
 
+    // Find shelter profile for logged-in user
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.redirect('/');
+    }
+
     const applications = await AdoptionApplication.findAll({
       include: [
         {
           model: Pet,
           as: 'pet',
-          where: { shelterId: req.session.user.id },
+          where: { shelterId: shelterProfile.id },
           include: [{
             model: ShelterProfile,
             as: 'shelter'
@@ -221,10 +230,20 @@ router.get('/browse-applications', async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
+    // Transform applications data to flatten fields for the view
+    const transformedApplications = applications.map(app => {
+      const plainApp = app.get({ plain: true });
+      return {
+        ...plainApp,
+        petName: plainApp.pet ? plainApp.pet.name : 'Unknown',
+        applicationDate: plainApp.createdAt,
+      };
+    });
+
     res.render('browse-applications', {
       title: 'Browse Applications',
       user: req.session.user,
-      applications: applications.map(app => app.get({ plain: true }))
+      applications: transformedApplications
     });
   } catch (error) {
     console.error('Error fetching applications:', error);

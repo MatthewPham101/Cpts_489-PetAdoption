@@ -42,11 +42,15 @@ app.use((req, res, next) => {
 
 const { Pet } = require('./models/pet');
 const ShelterProfile = require('./models/shelter');
+const TUser = require('./models/users')
+const Application = require('./models/adoptionApplication')
 
 async function syncDatabase() {
   try {
+    await TUser.sync({ force: false });
     await ShelterProfile.sync({ force: false });
     await Pet.sync({ force: false }); // Keep false unless testing
+    await Application.sync({ force: false });
     console.log('Database tables synced!');
   } catch (error) {
     console.error('Error syncing database:', error);
