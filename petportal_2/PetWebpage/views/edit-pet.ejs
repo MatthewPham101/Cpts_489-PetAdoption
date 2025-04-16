@@ -7,139 +7,111 @@
         <title>Edit Pet Profile</title>
     </head>
     <body>
-        <header class="auth-header">
-            <div class="nav-left">
-              <a href="/">
-                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
-              </a>
-              <nav class="nav-links">
-                <% if (user && user.role === 'shelter') { %>
-                  <!-- Shelter-specific navigation -->
-                  <a href="/manage-pets">Manage Pets</a>
-                  <a href="/browse-applications">Browse Applications</a>
-                  <a href="/create-pet-profile">Create Pet Profile</a>
-                  <a href="/edit-shelter">Edit Shelter</a>
-                <% } else { %>
-                  <!-- Default/Adopter navigation -->
-                  <a href="/about-us">About Us</a>
-                  <a href="/adoption-application">Adoption Application</a>
-                  <a href="/browse-pets">Browse Pets</a>
-                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
-                <% } %>
-              </nav>
+        <%- include('components/header') %>
+
+        <div>
+            <div class="about-content">
+                <h1>Edit Pet Profile</h1>
+                
+                <form action="/edit-pet/<%= pet.id %>" method="POST" enctype="multipart/form-data" class="pet-form">
+                    <div class="form-group">
+                        <label for="photo">Pet Photo:</label>
+                        <% if (pet.photoPath) { %>
+                            <img src="<%= pet.photoPath %>" alt="Current pet photo" class="current-photo">
+                        <% } %>
+                        <input type="file" id="photo" name="photo" accept="image/*">
+                        <p class="form-hint">Leave blank to keep current photo</p>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="name">Pet Name:</label>
+                        <input type="text" id="name" name="name" value="<%= pet.name %>" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="type">Pet Type:</label>
+                        <select id="type" name="type" required>
+                            <option value="dog" <%= pet.type === 'dog' ? 'selected' : '' %>>Dog</option>
+                            <option value="cat" <%= pet.type === 'cat' ? 'selected' : '' %>>Cat</option>
+                            <option value="other" <%= pet.type === 'other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="breed">Breed:</label>
+                        <input type="text" id="breed" name="breed" value="<%= pet.breed %>" required>
+                    </div>
+    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" min="0" value="<%= pet.age %>" required>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="ageUnit">Age Unit:</label>
+                            <select id="ageUnit" name="ageUnit">
+                                <option value="weeks" <%= pet.ageUnit === 'weeks' ? 'selected' : '' %>>Weeks</option>
+                                <option value="months" <%= pet.ageUnit === 'months' ? 'selected' : '' %>>Months</option>
+                                <option value="years" <%= pet.ageUnit === 'years' ? 'selected' : '' %>>Years</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" required>
+                                <option value="male" <%= pet.gender === 'male' ? 'selected' : '' %>>Male</option>
+                                <option value="female" <%= pet.gender === 'female' ? 'selected' : '' %>>Female</option>
+                            </select>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="size">Size:</label>
+                            <select id="size" name="size" required>
+                                <option value="small" <%= pet.size === 'small' ? 'selected' : '' %>>Small</option>
+                                <option value="medium" <%= pet.size === 'medium' ? 'selected' : '' %>>Medium</option>
+                                <option value="large" <%= pet.size === 'large' ? 'selected' : '' %>>Large</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" rows="4" required><%= pet.description %></textarea>
+                    </div>
+    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="isVaccinated" name="isVaccinated" <%= pet.isVaccinated ? 'checked' : '' %>>
+                        <label for="isVaccinated">Vaccinated</label>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="specialNeeds">Special Needs (if any):</label>
+                        <textarea id="specialNeeds" name="specialNeeds" rows="2"><%= pet.specialNeeds || '' %></textarea>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="available" <%= pet.status === 'available' ? 'selected' : '' %>>Available</option>
+                            <option value="pending" <%= pet.status === 'pending' ? 'selected' : '' %>>Pending Adoption</option>
+                            <option value="adopted" <%= pet.status === 'adopted' ? 'selected' : '' %>>Adopted</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Pet Profile</button>
+                        <a href="/manage-pets" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
             </div>
-            <div class="auth-buttons">
-              <% if (user) { %>
-                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
-                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
-              <% } else { %>
-                <a href="/auth/login" class="btn btn-secondary">Log In</a>
-                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
-              <% } %>
-            </div>
-          </header>
 
-        <div class="about-content">
-            <h1>Edit Pet Profile</h1>
-            
-            <form action="/edit-pet/<%= pet.id %>" method="POST" enctype="multipart/form-data" class="pet-form">
-                <div class="form-group">
-                    <label for="photo">Pet Photo:</label>
-                    <% if (pet.photoPath) { %>
-                        <img src="<%= pet.photoPath %>" alt="Current pet photo" class="current-photo">
-                    <% } %>
-                    <input type="file" id="photo" name="photo" accept="image/*">
-                    <p class="form-hint">Leave blank to keep current photo</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="name">Pet Name:</label>
-                    <input type="text" id="name" name="name" value="<%= pet.name %>" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="type">Pet Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="dog" <%= pet.type === 'dog' ? 'selected' : '' %>>Dog</option>
-                        <option value="cat" <%= pet.type === 'cat' ? 'selected' : '' %>>Cat</option>
-                        <option value="other" <%= pet.type === 'other' ? 'selected' : '' %>>Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="breed">Breed:</label>
-                    <input type="text" id="breed" name="breed" value="<%= pet.breed %>" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="age">Age:</label>
-                        <input type="number" id="age" name="age" min="0" value="<%= pet.age %>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ageUnit">Age Unit:</label>
-                        <select id="ageUnit" name="ageUnit">
-                            <option value="weeks" <%= pet.ageUnit === 'weeks' ? 'selected' : '' %>>Weeks</option>
-                            <option value="months" <%= pet.ageUnit === 'months' ? 'selected' : '' %>>Months</option>
-                            <option value="years" <%= pet.ageUnit === 'years' ? 'selected' : '' %>>Years</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" name="gender" required>
-                            <option value="male" <%= pet.gender === 'male' ? 'selected' : '' %>>Male</option>
-                            <option value="female" <%= pet.gender === 'female' ? 'selected' : '' %>>Female</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="size">Size:</label>
-                        <select id="size" name="size" required>
-                            <option value="small" <%= pet.size === 'small' ? 'selected' : '' %>>Small</option>
-                            <option value="medium" <%= pet.size === 'medium' ? 'selected' : '' %>>Medium</option>
-                            <option value="large" <%= pet.size === 'large' ? 'selected' : '' %>>Large</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4" required><%= pet.description %></textarea>
-                </div>
-
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="isVaccinated" name="isVaccinated" <%= pet.isVaccinated ? 'checked' : '' %>>
-                    <label for="isVaccinated">Vaccinated</label>
-                </div>
-
-                <div class="form-group">
-                    <label for="specialNeeds">Special Needs (if any):</label>
-                    <textarea id="specialNeeds" name="specialNeeds" rows="2"><%= pet.specialNeeds || '' %></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" name="status" required>
-                        <option value="available" <%= pet.status === 'available' ? 'selected' : '' %>>Available</option>
-                        <option value="pending" <%= pet.status === 'pending' ? 'selected' : '' %>>Pending Adoption</option>
-                        <option value="adopted" <%= pet.status === 'adopted' ? 'selected' : '' %>>Adopted</option>
-                    </select>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update Pet Profile</button>
-                    <a href="/manage-pets" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
+            <footer class="auth-footer">
+                <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+            </footer>
         </div>
-
-        <footer class="auth-footer">
-            <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
-        </footer>
     </body>
 </html>
 

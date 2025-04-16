@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/base.css">
+</head>
+<body>
+    <%- include('components/header') %>
+
+    <div class="applications-container">
+        <h1>Approved Adoption Applications</h1>
+        
+        <% if (applications && applications.length > 0) { %>
+            <% applications.forEach(app => { %>
+                <% if (app.status != 'approved') { %>
+                    <div class="application-card">
+                        <div class="application-header">
+                            <span class="application-pet">Pet: <%= app.petName %></span>
+                        </div>
+                        
+                        <div class="application-detail"><strong>Applicant:</strong> <%= app.applicantName %></div>
+                        <div class="application-detail"><strong>Email:</strong> <%= app.applicantEmail %></div>
+                        <div class="application-detail"><strong>Phone:</strong> <%= app.applicantPhone %></div>
+                        <div class="application-detail"><strong>Address:</strong> <%= app.applicantAddress %></div>
+                        <div class="application-detail"><strong>Living Situation:</strong> <%= app.livingSituation %></div>
+                        <div class="application-detail"><strong>Reason for Adoption:</strong> <%= app.adoptionReason %></div>
+                        <div class="application-detail"><strong>Applied On:</strong> <%= new Date(app.applicationDate).toLocaleDateString() %></div>
+                    </div>
+                <% } %>
+            <% }); %>
+        <% } else { %>
+            <p>No applications found.</p>
+        <% } %>
+    </div>
+
+    <footer class="auth-footer">
+        <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
+    </footer>
+</body>
+</html>
+
+<style>
+    .applications-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .application-card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid grey;
+    }
+    
+    .application-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    
+    .application-pet {
+        font-weight: bold;
+        color: #5a3d5a;
+    }
+</style>
