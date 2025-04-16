@@ -4,30 +4,28 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/users');
 
-// Helper function for flash messages
 const setFlashMessage = (req, type, message) => {
   req.session.flash = { type, message };
 };
 
-// GET Routes
 router.get('/signup', (req, res) => {
     res.render('signup', {
       title: 'Sign Up - Pet Portal',
       user: req.session.userId || null,
       flash: req.session.flash,
-      formData: req.session.formData || {} // Add empty object as default
+      formData: req.session.formData || {} 
     });
-    // Clear after displaying
+    // Clear 
     delete req.session.flash;
     delete req.session.formData;
   });
   
   router.get('/login', (req, res) => {
     res.render('login', {
-      title: 'Pet Portal - Login',  // Add title
-      user: req.session.user || null,  // Add user session
-      flash: req.session.flash,  // Add flash messages
-      formData: req.session.formData || {}  // Add form data persistence
+      title: 'Pet Portal - Login',  
+      user: req.session.user || null, 
+      flash: req.session.flash, 
+      formData: req.session.formData || {}  
     });
 
     delete req.session.flash;
@@ -43,7 +41,7 @@ router.get('/signup', (req, res) => {
     });
   });
 
-// POST Routes
+
 router.post('/signup', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, role } = req.body;
 
@@ -72,10 +70,10 @@ router.post('/signup', async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      role: role || 'user' // Default role
+      role: role || 'user' 
     });
 
-    // Auto-login after signup
+    // auto login
     req.session.user = {
       id: newUser.id,
       email: newUser.email,
@@ -88,7 +86,7 @@ router.post('/signup', async (req, res) => {
 
   } catch (error) {
     console.error("Signup error:", error);
-    setFlashMessage(req, 'error', 'Error during registration');
+    setFlashMessage(req, 'error', 'Error  during registration');
     res.redirect('/auth/signup');
   }
 });
@@ -110,7 +108,6 @@ router.post('/login', async (req, res) => {
       return res.redirect('/auth/login');
     }
 
-    // Set session
     req.session.user = {
       id: user.id,
       email: user.email,
@@ -120,7 +117,6 @@ router.post('/login', async (req, res) => {
 
     setFlashMessage(req, 'success', 'Login successful!');
     
-    // Redirect based on role
     const redirectPath = user.role === 'admin' ? '/admin' : '/';
     res.redirect(redirectPath);
 

@@ -18,6 +18,7 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid grey;
         }
         
         .application-header {
@@ -69,6 +70,26 @@
             background-color: #dc3545;
             color: white;
         }
+
+        .approved-btn {
+            background-color: #e0d6db;
+            text-align: center;
+            border: 1px solid black;
+            padding: 4px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 95%;
+            text-decoration: none;
+            color: black;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .approved-btn:hover {
+            background-color: #ff92c2;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -77,32 +98,40 @@
 
     <div class="applications-container">
         <h1>Adoption Applications</h1>
+
+        <a href="/approved-applications" class="approved-btn">See All Approved Applications</a>
         
         <% if (applications && applications.length > 0) { %>
             <% applications.forEach(app => { %>
-                <div class="application-card">
-                    <div class="application-header">
-                        <span class="application-pet">Pet: <%= app.petName %></span>
-                        <span class="application-status status-<%= app.status %>">
-                            <%= app.status.charAt(0).toUpperCase() + app.status.slice(1) %>
-                        </span>
-                    </div>
-                    
-                    <div class="application-detail"><strong>Applicant:</strong> <%= app.applicantName %></div>
-                    <div class="application-detail"><strong>Email:</strong> <%= app.applicantEmail %></div>
-                    <div class="application-detail"><strong>Phone:</strong> <%= app.applicantPhone %></div>
-                    <div class="application-detail"><strong>Address:</strong> <%= app.applicantAddress %></div>
-                    <div class="application-detail"><strong>Living Situation:</strong> <%= app.livingSituation %></div>
-                    <div class="application-detail"><strong>Reason for Adoption:</strong> <%= app.adoptionReason %></div>
-                    <div class="application-detail"><strong>Applied On:</strong> <%= new Date(app.applicationDate).toLocaleDateString() %></div>
-                    
-                    <% if (app.status === 'pending') { %>
-                        <div class="application-actions">
-                            <a href="/approve-application/<%= app.id %>" class="btn btn-approve">Approve</a>
-                            <a href="/reject-application/<%= app.id %>" class="btn btn-reject">Reject</a>
+                <% if (app.status != 'rejected') { %>
+                    <div class="application-card">
+                        <div class="application-header">
+                            <span class="application-pet">Pet: <%= app.petName %></span>
+                            <span class="application-status status-<%= app.status %>">
+                                <%= app.status.charAt(0).toUpperCase() + app.status.slice(1) %>
+                            </span>
                         </div>
-                    <% } %>
-                </div>
+                        
+                        <div class="application-detail"><strong>Applicant:</strong> <%= app.applicantName %></div>
+                        <div class="application-detail"><strong>Email:</strong> <%= app.applicantEmail %></div>
+                        <div class="application-detail"><strong>Phone:</strong> <%= app.applicantPhone %></div>
+                        <div class="application-detail"><strong>Address:</strong> <%= app.applicantAddress %></div>
+                        <div class="application-detail"><strong>Living Situation:</strong> <%= app.livingSituation %></div>
+                        <div class="application-detail"><strong>Reason for Adoption:</strong> <%= app.adoptionReason %></div>
+                        <div class="application-detail"><strong>Applied On:</strong> <%= new Date(app.applicationDate).toLocaleDateString() %></div>
+                        
+                        <% if (app.status === 'pending') { %>
+                            <div class="application-actions">
+                                <form action="/approve-application/<%= app.id %>" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-approve">Approve</button>
+                                </form>
+                                <form action="/reject-application/<%= app.id %>" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-reject">Reject</button>
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
             <% }); %>
         <% } else { %>
             <p>No applications found.</p>

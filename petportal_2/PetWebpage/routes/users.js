@@ -1,12 +1,40 @@
 var express = require('express');
 var router = express.Router();
 const { Pet, AdoptionApplication, User, ShelterProfile } = require('../models');
-/* GET users listing. */
+
+
+
+
+// home page 
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
+router.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'firstName', 'lastName', 'email', 'role'] 
+    });
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+router.get('/api/users/:id', async (req, res) => {
+  try {
+    const users = await User.findOne({
+      where: { id: req.params.id },
+    });
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
 
+// get to the browse pet ppage 
 router.get('/browse-pets', async (req, res) => {
   try {
     // Get all available pets with shelter info
@@ -20,12 +48,12 @@ router.get('/browse-pets', async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    console.log('Pets found:', pets.length); // Debug log
+    console.log('Pets found:', pets.length); 
 
     res.render('browse-pets', {
       title: 'Browse Pets',
       user: req.session.user || null,
-      pets: pets.map(pet => pet.get({ plain: true })) // Ensure plain object
+      pets: pets.map(pet => pet.get({ plain: true })) 
     });
   } catch (error) {
     console.error('Error fetching pets:', error);
@@ -37,7 +65,7 @@ router.get('/browse-pets', async (req, res) => {
   }
 });
 
-// GET pet profile page
+// profile page of the pet when the user click on it
 router.get('/pet-profile/:id', async (req, res) => {
   try {
     const pet = await Pet.findOne({
@@ -52,7 +80,7 @@ router.get('/pet-profile/:id', async (req, res) => {
     if (!pet) {
       return res.status(404).render('error', {
         message: 'Pet not found',
-        error: 'The pet you are looking for does not exist or has been removed',
+        error: 'errors no pet found',
         user: req.session.user || null
       });
     }
@@ -65,14 +93,14 @@ router.get('/pet-profile/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching pet:', error);
     res.status(500).render('error', {
-      message: 'Error loading pet profile',
+      message: 'Erro loading in the pet',
       error: error.message,
       user: req.session.user || null
     });
   }
 });
 
-// GET adoption application form with pet info
+// get the pet application page
 router.get('/adoption-application', async (req, res) => {
   try {
     const petId = req.query.petId;
@@ -106,13 +134,13 @@ router.get('/adoption-application', async (req, res) => {
   }
 });
 
-// POST submit adoption application
+// POST when the user submit adoption application
 router.post('/submit-application', async (req, res) => {
   try {
     const { petId, fullName, email, phone, address, livingSituation, adoptionReason } = req.body;
     const userId = req.session.user ? req.session.user.id : null;
 
-    // Create the application
+    // the applications
     const application = await AdoptionApplication.create({
       petId,
       userId,
@@ -125,7 +153,7 @@ router.post('/submit-application', async (req, res) => {
       status: 'pending'
     });
 
-    // Update pet status to pending if it was available
+    // update the pet status
     await Pet.update(
       { status: 'pending' },
       { where: { id: petId, status: 'available' } }
@@ -142,7 +170,7 @@ router.post('/submit-application', async (req, res) => {
   }
 });
 
-// GET application submitted confirmation
+// pet app when submitted
 router.get('/application-submitted', (req, res) => {
   res.render('application-submitted', {
     title: 'Application Submitted',

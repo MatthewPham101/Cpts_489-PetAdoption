@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// ===== Multer Configuration =====
+// multer config for uploading pictures 
 const uploadDir = path.join(__dirname, '../public/pets');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -29,16 +29,16 @@ const upload = multer({
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed!'), false);
+      cb(new Error('image only pls'), false);
     }
   }
 });
-// ===== End Multer Configuration =====
 
 
+// shelter manage pet page
 router.get('/manage-pets', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
@@ -67,10 +67,11 @@ router.get('/manage-pets', async (req, res) => {
   }
 });
 
+// shelter delete pet
 router.post('/delete-pet/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
-      return res.status(403).send('Only shelters can delete pets');
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
+      return res.status(403).send('only the shelter that uploaded the pet cna delete them');
     }
 
     const pet = await Pet.findOne({
@@ -83,7 +84,7 @@ router.post('/delete-pet/:id', async (req, res) => {
     });
 
     if (!pet) {
-      return res.status(404).send('Pet not found or you do not have permission to delete it');
+      return res.status(404).send('error pet not founds');
     }
 
     if (pet.photoPath) {
@@ -101,9 +102,10 @@ router.post('/delete-pet/:id', async (req, res) => {
   }
 });
 
+// edit pet
 router.get('/edit-pet/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
@@ -117,7 +119,7 @@ router.get('/edit-pet/:id', async (req, res) => {
     });
 
     if (!pet) {
-      return res.status(404).send('Pet not found or you do not have permission to edit it');
+      return res.status(404).send('pet not found');
     }
 
     res.render('edit-pet', {
@@ -131,10 +133,12 @@ router.get('/edit-pet/:id', async (req, res) => {
   }
 });
 
+
+// edit pet when post
 router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
-      return res.status(403).send('Only shelters can edit pets');
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
+      return res.status(403).send('Only shelters can edit pet');
     }
 
     const pet = await Pet.findOne({
@@ -147,7 +151,7 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
     });
 
     if (!pet) {
-      return res.status(404).send('Pet not found or you do not have permission to edit it');
+      return res.status(404).send('error');
     }
 
     const { name, type, breed, age, ageUnit, gender, size, description, isVaccinated, specialNeeds, status } = req.body;
@@ -180,7 +184,6 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
     res.redirect('/manage-pets');
   } catch (error) {
     console.error('Error updating pet:', error);
-    
     if (req.file) {
       fs.unlink(req.file.path, (err) => {
         if (err) console.error('Error deleting uploaded file:', err);
@@ -195,13 +198,12 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
   }
 });
 
+// brose application
 router.get('/browse-applications', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+    if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
-
-    // Find shelter profile for logged-in user
     const shelterProfile = await ShelterProfile.findOne({
       where: { userId: req.session.user.id }
     });
@@ -230,7 +232,7 @@ router.get('/browse-applications', async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    // Transform applications data to flatten fields for the view
+    // transform the data 
     const transformedApplications = applications.map(app => {
       const plainApp = app.get({ plain: true });
       return {
@@ -251,11 +253,19 @@ router.get('/browse-applications', async (req, res) => {
   }
 });
 
-// Add approval/rejection routes
+// Add approval and rejection routes
 router.post('/approve-application/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can approve applications');
+    }
+
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.status(404).send('Shelter profile not found');
     }
 
     const application = await AdoptionApplication.findOne({
@@ -263,7 +273,7 @@ router.post('/approve-application/:id', async (req, res) => {
       include: [{
         model: Pet,
         as: 'pet',
-        where: { shelterId: req.session.user.id }
+        where: { shelterId: shelterProfile.id }
       }]
     });
 
@@ -283,8 +293,16 @@ router.post('/approve-application/:id', async (req, res) => {
 
 router.post('/reject-application/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can reject applications');
+    }
+
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.status(404).send('Shelter profile not found');
     }
 
     const application = await AdoptionApplication.findOne({
@@ -292,7 +310,7 @@ router.post('/reject-application/:id', async (req, res) => {
       include: [{
         model: Pet,
         as: 'pet',
-        where: { shelterId: req.session.user.id }
+        where: { shelterId: shelterProfile.id }
       }]
     });
 
@@ -311,7 +329,7 @@ router.post('/reject-application/:id', async (req, res) => {
 });
 
 router.get('/create-pet-profile', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
   res.render('create-pet-profile', { 
@@ -320,6 +338,7 @@ router.get('/create-pet-profile', (req, res) => {
   });
 });
 
+// create pet profile
 router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
   try {
     if (!req.session.user || req.session.user.role !== 'shelter') {
@@ -327,7 +346,7 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
     }
 
     if (!Pet || typeof Pet.create !== 'function') {
-      throw new Error('Pet model is not properly initialized');
+      throw new Error('Pet model is not initize');
     }
 
     const { name, type, breed, age, ageUnit, gender, size, description, isVaccinated, specialNeeds } = req.body;
@@ -381,7 +400,7 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
 });
 
 router.get('/edit-shelter', async (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
 
@@ -397,7 +416,7 @@ router.get('/edit-shelter', async (req, res) => {
 });
 
 router.post('/edit-shelter', async (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
 
@@ -464,6 +483,62 @@ router.get('/pet-compatibility', (req, res) => {
     title: 'Pet Compatibility Quiz',
     user: req.session.user || null 
   });
+});
+
+router.get('/approved-applications', async (req, res) => {
+  try {
+    if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
+      return res.redirect('/');
+    }
+
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.redirect('/');
+    }
+
+    const applications = await AdoptionApplication.findAll({
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          where: { shelterId: shelterProfile.id },
+          include: [{
+            model: ShelterProfile,
+            as: 'shelter'
+          }]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Transform applications data to flatten fields for the view
+    const transformedApplications = applications.map(app => {
+      const plainApp = app.get({ plain: true });
+      return {
+        ...plainApp,
+        petName: plainApp.pet ? plainApp.pet.name : 'Unknown',
+        applicationDate: plainApp.createdAt,
+      };
+    });
+
+    res.render('approved-applications', {
+      title: 'Approved Applications',
+      user: req.session.user,
+      applications: transformedApplications
+    });
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).send('Server Error');
+  }
+  // yay
 });
 
 module.exports = router;

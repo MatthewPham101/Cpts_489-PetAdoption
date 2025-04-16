@@ -4,7 +4,7 @@
       <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
     </a>
     <nav class="nav-links">
-      <% if (user && user.role === 'shelter') { %>
+      <% if (user && (user.role === 'shelter' || user.role === 'admin')) { %>
         <!-- Shelter-specific navigation -->
         <a href="/manage-pets">Manage Pets</a>
         <a href="/browse-applications">Browse Applications</a>
@@ -16,6 +16,9 @@
         <a href="/adoption-application">Adoption Application</a>
         <a href="/browse-pets">Browse Pets</a>
         <a href="/pet-compatibility">Pet Compatibility Quiz</a>
+      <% } %>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/admin">Admin Page</a>
       <% } %>
     </nav>
   </div>
