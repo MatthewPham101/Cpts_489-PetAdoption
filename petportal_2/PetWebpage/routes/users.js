@@ -6,6 +6,31 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+// GET all users as JSON for admin page
+router.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'firstName', 'lastName', 'email', 'role'] // Select fields to expose
+    });
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+router.get('/api/users/:id', async (req, res) => {
+  try {
+    const users = await User.findOne({
+      where: { id: req.params.id },
+    });
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
 
 router.get('/browse-pets', async (req, res) => {
   try {
