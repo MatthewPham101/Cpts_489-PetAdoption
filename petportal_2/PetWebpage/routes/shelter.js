@@ -258,12 +258,20 @@ router.post('/approve-application/:id', async (req, res) => {
       return res.status(403).send('Only shelters can approve applications');
     }
 
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.status(404).send('Shelter profile not found');
+    }
+
     const application = await AdoptionApplication.findOne({
       where: { id: req.params.id },
       include: [{
         model: Pet,
         as: 'pet',
-        where: { shelterId: req.session.user.id }
+        where: { shelterId: shelterProfile.id }
       }]
     });
 
@@ -287,12 +295,20 @@ router.post('/reject-application/:id', async (req, res) => {
       return res.status(403).send('Only shelters can reject applications');
     }
 
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.status(404).send('Shelter profile not found');
+    }
+
     const application = await AdoptionApplication.findOne({
       where: { id: req.params.id },
       include: [{
         model: Pet,
         as: 'pet',
-        where: { shelterId: req.session.user.id }
+        where: { shelterId: shelterProfile.id }
       }]
     });
 
@@ -464,6 +480,62 @@ router.get('/pet-compatibility', (req, res) => {
     title: 'Pet Compatibility Quiz',
     user: req.session.user || null 
   });
+});
+
+router.get('/approved-applications', async (req, res) => {
+  try {
+    if (!req.session.user || req.session.user.role !== 'shelter') {
+      return res.redirect('/');
+    }
+
+    // Find shelter profile for logged-in user
+    const shelterProfile = await ShelterProfile.findOne({
+      where: { userId: req.session.user.id }
+    });
+
+    if (!shelterProfile) {
+      return res.redirect('/');
+    }
+
+    const applications = await AdoptionApplication.findAll({
+      include: [
+        {
+          model: Pet,
+          as: 'pet',
+          where: { shelterId: shelterProfile.id },
+          include: [{
+            model: ShelterProfile,
+            as: 'shelter'
+          }]
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Transform applications data to flatten fields for the view
+    const transformedApplications = applications.map(app => {
+      const plainApp = app.get({ plain: true });
+      return {
+        ...plainApp,
+        petName: plainApp.pet ? plainApp.pet.name : 'Unknown',
+        applicationDate: plainApp.createdAt,
+      };
+    });
+
+    res.render('approved-applications', {
+      title: 'Approved Applications',
+      user: req.session.user,
+      applications: transformedApplications
+    });
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;

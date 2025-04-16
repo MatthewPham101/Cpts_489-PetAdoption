@@ -9,7 +9,7 @@ const session = require('express-session');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
-const shelterRouter = require('./routes/shelter'); // Add this line
+const shelterRouter = require('./routes/shelter');
 
 
 const app = express();
