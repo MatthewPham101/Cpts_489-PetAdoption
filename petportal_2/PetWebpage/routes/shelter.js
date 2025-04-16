@@ -484,7 +484,7 @@ router.get('/pet-compatibility', (req, res) => {
 
 router.get('/approved-applications', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter' || req.session.user.role !== 'admin') {
+    if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
