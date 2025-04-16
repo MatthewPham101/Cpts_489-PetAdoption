@@ -33,7 +33,7 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-// Make user available to all views
+// Make user available to all views and routes
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; // Changed from userId to user
   next();
@@ -73,21 +73,24 @@ app.use('/', shelterRouter); // Now properly defined
 
 
 app.get('/about-us', (req, res) => {
-  res.render('about-us', { user: req.session.userId });
+  res.render('about-us', { user: req.session.user });
 });
 
 app.get('/adoption-application', (req, res) => {
-  res.render('adoption-application', { user: req.session.userId });
+  res.render('adoption-application', { user: req.session.user });
 });
 
 app.get('/browse-pets', (req, res) => {
-  res.render('browse-pets', { user: req.session.userId });
+  res.render('browse-pets', { user: req.session.user });
 });
 
 app.get('/pet-compatability', (req, res) => {
   res.render('pet-compatibility', { user: req.session.userId });
 });
 
+app.get('/admin', (req, res) => {
+  res.render('admin', { user: req.session.user });
+});
 
 app.post('/pet-compatability/results', (req, res) => {
   const { time, home, 'other-pets': otherPets, personality } = req.body;
