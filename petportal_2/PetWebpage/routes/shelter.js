@@ -536,6 +536,7 @@ router.get('/approved-applications', async (req, res) => {
     console.error('Error fetching applications:', error);
     res.status(500).send('Server Error');
   }
+  // yay
 });
 
 module.exports = router;
