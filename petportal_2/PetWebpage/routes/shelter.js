@@ -38,7 +38,7 @@ const upload = multer({
 
 router.get('/manage-pets', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
@@ -69,7 +69,7 @@ router.get('/manage-pets', async (req, res) => {
 
 router.post('/delete-pet/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can delete pets');
     }
 
@@ -103,7 +103,7 @@ router.post('/delete-pet/:id', async (req, res) => {
 
 router.get('/edit-pet/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
@@ -133,7 +133,7 @@ router.get('/edit-pet/:id', async (req, res) => {
 
 router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can edit pets');
     }
 
@@ -197,7 +197,7 @@ router.post('/edit-pet/:id', upload.single('photo'), async (req, res) => {
 
 router.get('/browse-applications', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+    if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.redirect('/');
     }
 
@@ -254,7 +254,7 @@ router.get('/browse-applications', async (req, res) => {
 // Add approval/rejection routes
 router.post('/approve-application/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can approve applications');
     }
 
@@ -291,7 +291,7 @@ router.post('/approve-application/:id', async (req, res) => {
 
 router.post('/reject-application/:id', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
       return res.status(403).send('Only shelters can reject applications');
     }
 
@@ -327,7 +327,7 @@ router.post('/reject-application/:id', async (req, res) => {
 });
 
 router.get('/create-pet-profile', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
   res.render('create-pet-profile', { 
@@ -397,7 +397,7 @@ router.post('/create-pet-profile', upload.single('photo'), async (req, res) => {
 });
 
 router.get('/edit-shelter', async (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
 
@@ -413,7 +413,7 @@ router.get('/edit-shelter', async (req, res) => {
 });
 
 router.post('/edit-shelter', async (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'shelter') {
+if (!req.session.user || (req.session.user.role !== 'shelter' && req.session.user.role !== 'admin')) {
     return res.redirect('/');
   }
 
@@ -484,7 +484,7 @@ router.get('/pet-compatibility', (req, res) => {
 
 router.get('/approved-applications', async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'shelter') {
+    if (!req.session.user || req.session.user.role !== 'shelter' || req.session.user.role !== 'admin') {
       return res.redirect('/');
     }
 
