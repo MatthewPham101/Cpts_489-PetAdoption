@@ -34,17 +34,17 @@
     </main>
 
   <script>
-    async function fetchUsers() {
-      try {
-        const response = await fetch('/users/api/users');
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch users');
-        }
-        
-        const users = await response.json();
-        const userTableBody = document.querySelector('#userTable tbody');
-        userTableBody.innerHTML = '';
+        async function fetchUsers() {
+          try {
+            const response = await fetch('/api/users');
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || 'Failed to fetch users');
+            }
+            
+            const users = await response.json();
+            const userTableBody = document.querySelector('#userTable tbody');
+            userTableBody.innerHTML = '';
 
         if (users.length === 0) {
           userTableBody.innerHTML = `
@@ -82,8 +82,8 @@
     }
 
     async function editUser(userId) {
-      // TODO: Implement edit functionality
-      alert('Edit functionality coming soon!');
+      // Redirect to the edit user page
+      window.location.href = `/edit/${userId}`;
     }
 
     async function deleteUser(userId) {
@@ -107,7 +107,7 @@
     };
   </script>
 
-  <!-- Footer (same as home.ejs) -->
+  <!-- Footer -->
   <footer class="auth-footer">
     <p>&copy; 2025 PET PORTAL <a href="/help">Help Center</a> | <a href="/privacy">Privacy Policy</a></p>
   </footer>

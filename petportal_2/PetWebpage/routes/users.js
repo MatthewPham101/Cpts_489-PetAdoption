@@ -175,4 +175,61 @@ router.get('/application-submitted', (req, res) => {
   });
 });
 
+
+// GET edit user form
+router.get('/edit/:id', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).render('error', {
+        message: 'User not found',
+        error: 'The user you are trying to edit does not exist',
+        user: req.session.user || null
+      });
+    }
+    res.render('edit-user', { user: user.get({ plain: true }), userSession: req.session.user || null });
+  } catch (error) {
+    console.error('Error loading edit user form:', error);
+    res.status(500).render('error', {
+      message: 'Error loading edit user form',
+      error: error.message,
+      user: req.session.user || null
+    });
+  }
+});
+
+// POST update user
+router.post('/edit/:id', async (req, res) => {
+  try {
+    const { firstName, lastName, email, role } = req.body;
+    const userId = req.params.id;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).render('error', {
+        message: 'User not found',
+        error: 'The user you are trying to update does not exist',
+        user: req.session.user || null
+      });
+    }
+
+    // Update user fields
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+    user.role = role;
+
+    await user.save();
+
+    res.redirect('/admin');
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).render('error', {
+      message: 'Error updating user',
+      error: error.message,
+      user: req.session.user || null
+    });
+  }
+});
+
 module.exports = router;
