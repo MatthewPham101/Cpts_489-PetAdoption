@@ -180,11 +180,12 @@ body {
 
 .about-content {
   position: relative;
+  text-align: center;
   color: white;
   z-index: 1;
   padding: 20px;
   background: rgba(89, 87, 88, 0.7);  /* Semi-transparent background */
-  border-radius: 10px;
+  height: 100%;
 }
 
 .about-content h1 {
@@ -198,7 +199,7 @@ body {
 }
 
 .about-image {
-  width: 100%;
+  width: 60%;
   height: auto;
   border-radius: 10px;
   margin-top: 30px;
@@ -373,10 +374,11 @@ body {
   background: white;
   border-radius: 10px;
   padding: 30px;
-  width: auto;
+  max-width: 800px;
+  margin: 0 auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  justify-content: center;
+  text-align: left;
+  display: block;
 }
 
 .result-container {

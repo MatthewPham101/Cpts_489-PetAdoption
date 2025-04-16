@@ -68,9 +68,6 @@ app.use('/', shelterRouter); // Now properly defined
 
 
 
-<<<<<<< HEAD
-// Error handlers
-=======
 
 
 
@@ -130,7 +127,6 @@ app.post('/pet-compatability/results', (req, res) => {
 
 
 // catch 404 and forward to error handler
->>>>>>> 2c3b3695b6100d50bff19d800eedacd6d366f43d
 app.use(function(req, res, next) {
   next(createError(404));
 });

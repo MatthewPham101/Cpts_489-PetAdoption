@@ -7,41 +7,7 @@
         <title>Manage Pets</title>
     </head>
     <body>
-<<<<<<< HEAD
-        <header class="auth-header">
-            <div class="nav-left">
-              <a href="/">
-                <img src="/assets/pet-portal-logo.png" alt="Pet Portal Logo" class="logo" />
-              </a>
-              <nav class="nav-links">
-                <% if (user && user.role === 'shelter') { %>
-                  <!-- Shelter-specific navigation -->
-                  <a href="/manage-pets">Manage Pets</a>
-                  <a href="/browse-applications">Browse Applications</a>
-                  <a href="/create-pet-profile">Create Pet Profile</a>
-                  <a href="/edit-shelter">Edit Shelter</a>
-                <% } else { %>
-                  <!-- Default/Adopter navigation -->
-                  <a href="/about-us">About Us</a>
-                  <a href="/adoption-application">Adoption Application</a>
-                  <a href="/browse-pets">Browse Pets</a>
-                  <a href="/pet-compatibility">Pet Compatibility Quiz</a>
-                <% } %>
-              </nav>
-            </div>
-            <div class="auth-buttons">
-              <% if (user) { %>
-                <span class="welcome-message">Welcome, <%= user.firstName %>!</span>
-                <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
-              <% } else { %>
-                <a href="/auth/login" class="btn btn-secondary">Log In</a>
-                <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
-              <% } %>
-            </div>
-          </header>
-=======
         <%- include('components/header') %>
->>>>>>> 2c3b3695b6100d50bff19d800eedacd6d366f43d
 
         <div class="about-content">
             <h1>Manage Pets</h1>
@@ -73,10 +39,14 @@
                                 </a>
                             </div>
                             <div class="edit-bar">
-                                <a href="/edit-pet/<%= pet.id %>" class="edit-button">Edit</a>
-                                <form action="/delete-pet/<%= pet.id %>" method="POST" style="display: inline;">
-                                    <button type="submit" class="edit-button" onclick="return confirm('Are you sure you want to delete <%= pet.name %>?')">Delete</button>
-                                </form>
+                                <div class="edit-button">
+                                    <a href="/edit-pet/<%= pet.id %>" class="edit-button">Edit</a>
+                                </div>
+                                <div class="edit-button">
+                                    <form action="/delete-pet/<%= pet.id %>" method="POST" style="display: inline;">
+                                        <button type="submit" class="edit-button" onclick="return confirm('Are you sure you want to delete <%= pet.name %>?')">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     <% }); %>
