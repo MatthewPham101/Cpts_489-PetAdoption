@@ -64,65 +64,8 @@ syncDatabase();
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/', usersRouter); 
-app.use('/', shelterRouter); // Now properly defined
+app.use('/', shelterRouter); 
 
-
-
-
-
-
-
-app.get('/about-us', (req, res) => {
-  res.render('about-us', { user: req.session.userId });
-});
-
-app.get('/adoption-application', (req, res) => {
-  res.render('adoption-application', { user: req.session.userId });
-});
-
-app.get('/browse-pets', (req, res) => {
-  res.render('browse-pets', { user: req.session.userId });
-});
-
-app.get('/pet-compatability', (req, res) => {
-  res.render('pet-compatibility', { user: req.session.userId });
-});
-
-
-app.post('/pet-compatability/results', (req, res) => {
-  const { time, home, 'other-pets': otherPets, personality } = req.body;
-
-  function getRecommendPet() {
-    if (time === 'low')
-    {
-      if (home === 'apartment') return 'Cat';
-      if (home === 'house' && personality === 'affectionate') return 'Rabbit';
-      if (home === 'farm') return 'Barn Cat';
-      return 'Older Cat';
-    }
-
-    if (time === 'medium')
-    {
-      if (home === 'apartment') return 'Small Dog';
-      if (home === 'house') return 'Medium Dog';
-      if (home === 'farm') return 'Goat or Farm Cat';
-    }
-
-    if (time === 'low')
-    {
-      if (home === 'apartment' && personality === 'affectionate') return 'Parrot or Ferret';
-      if (home === 'house' && personality === 'playful') return 'Labrador Retriever';
-      if (home === 'house' && personality === 'affectionate') return 'Golden Retriever';
-      if (home === 'farm') return 'Border Collie';
-    }
-
-    return 'Mixed breed or rescue animal';
-  }
-
-  const recommendation = getRecommendPet();
-
-  res.render('pet-quiz-result', {recommendation});
-})
 
 
 
