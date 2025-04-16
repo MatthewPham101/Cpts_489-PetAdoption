@@ -89,9 +89,10 @@
     async function deleteUser(userId) {
       if (confirm('Are you sure you want to delete this user?')) {
         try {
-          const response = await fetch(`/users/api/users/${userId}`, {
+          const response = await fetch(`api/users/${userId}`, {
             method: 'DELETE'
           });
+          console.log(response);
           if (!response.ok) throw new Error('Delete failed');
           fetchUsers(); // Refresh the table
         } catch (error) {
